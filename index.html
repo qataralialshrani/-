@@ -28,7 +28,6 @@
             border-bottom: 2px solid #4CAF50;
             padding-bottom: 10px;
         }
-        /* إضافة نمط للترجمة الإنجليزية */
         .subtitle-en {
             color: #555;
             text-align: center;
@@ -65,10 +64,6 @@
             box-sizing: border-box;
             autocomplete: on;
         }
-        input[type="file"] {
-            padding-right: 0;
-        }
-        /* إضافة أنماط لحقل الـ Select الجديد */
         select {
             width: 100%;
             padding: 12px;
@@ -77,7 +72,6 @@
             font-size: 16px;
             box-sizing: border-box;
         }
-
         .submit-btn {
             background: linear-gradient(135deg, #4CAF50, #45a049);
             color: white;
@@ -133,65 +127,12 @@
             font-size: 24px;
             margin-left: 5px;
         }
-        .payment-details {
-            background: #e6ffe6; 
-            padding: 15px; 
-            border-radius: 8px; 
-            margin-bottom: 20px; 
-            border: 1px solid #4CAF50;
-            text-align: center;
-        }
-        .qr-code-display {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 10px;
-            margin-bottom: 15px;
-        }
-        .qr-code-display img {
-            max-width: 150px; 
-            height: auto;
-            border: 1px solid #ddd;
-            padding: 5px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .bank-details-text {
-            text-align: right;
-            width: 100%;
-            padding: 0 10px;
-            box-sizing: border-box;
-            margin-top: 10px;
-        }
-        .bank-details-text p {
-             margin: 5px 0;
-             font-size: 15px;
-        }
-        /* إضافة أنماط قسم التخصصات */
         .specialization-section {
             margin-bottom: 30px;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background-color: #f9f9f9;
-        }
-        .specialization-title {
-            color: #4CAF50;
-            margin-bottom: 15px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .specialization-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .specialization-list li {
-            padding: 8px 0;
-            border-bottom: 1px dashed #ddd;
-        }
-        .specialization-list li:last-child {
-            border-bottom: none;
         }
         .specialization-toggle {
             background: linear-gradient(135deg, #4CAF50, #45a049);
@@ -215,46 +156,84 @@
         .specializations-container.active {
             display: block;
         }
-        .specialization-group {
-            margin-bottom: 20px;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f0f8f0;
+        .colleges-container, .specialties-container {
+            display: none;
+            animation: fadeIn 0.3s;
         }
-        .specialization-group h4, .specialization-group h5 {
-            color: #2c5e2c;
-            margin-bottom: 10px;
+        .colleges-container.active, .specialties-container.active {
+            display: block;
         }
-        .specialization-item {
-            padding: 8px 12px;
-            margin: 5px 0;
+        .back-btn {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            color: white;
+            padding: 10px 15px;
+            border: none;
             border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            width: auto;
+            display: inline-block;
+        }
+        .back-btn:hover {
+            background: linear-gradient(135deg, #5a6268, #6c757d);
+        }
+        .college-item, .specialty-item {
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
-            border: 1px solid transparent;
+            border: 1px solid #ddd;
+            background-color: white;
+            text-align: right;
+            font-size: 16px;
         }
-        .specialization-item:hover {
+        .college-item:hover, .specialty-item:hover {
             background-color: #e6ffe6;
             border-color: #4CAF50;
+            transform: translateX(-5px);
         }
-        .specialization-item.selected {
+        .college-item.selected, .specialty-item.selected {
             background-color: #4CAF50;
             color: white;
             font-weight: bold;
+            border-color: #45a049;
+        }
+        .college-item i, .specialty-item i {
+            margin-left: 10px;
+            font-size: 18px;
         }
         .selected-specialization {
             background-color: #e6ffe6;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
             text-align: center;
+            border: 2px solid #4CAF50;
             display: none;
         }
         .selected-specialization span {
             font-weight: bold;
             color: #4CAF50;
+            font-size: 18px;
+        }
+        .step-indicator {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+        .current-step {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -263,156 +242,239 @@
         
         <div class="specialization-section">
             <button type="button" class="specialization-toggle" id="specializationToggle">
-                عرض التخصصات والبرامج المتاحة
+                <i class="fas fa-university"></i> عرض الكليات المتاحة
             </button>
             
             <div class="specializations-container" id="specializationsContainer">
-                <h3 class="specialization-title">التخصصات والبرامج المتاحة في جامعة الملك خالد</h3>
-                
-                <div class="specialization-group">
-                    <h4>🔬 الكليات الصحية والطبية</h4>
-                    <h5>كلية الطب</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="الطب والجراحة (MBBS)">- الطب والجراحة (MBBS)</li>
-                    </ul>
-                    
-                    <h5>كلية طب الأسنان</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="طب الأسنان">- طب الأسنان</li>
-                    </ul>
-                    
-                    <h5>كلية الصيدلة</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="الصيدلة السريرية (دكتور صيدلي - Pharm.D)">- الصيدلة السريرية (دكتور صيدلي - Pharm.D)</li>
-                    </ul>
-                    
-                    <h5>كلية العلوم الطبية التطبيقية</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="الخدمات الطبية الطارئة">- الخدمات الطبية الطارئة</li>
-                        <li class="specialization-item" data-specialization="التمريض">- التمريض</li>
-                        <li class="specialization-item" data-specialization="العلوم المخبرية الإكلينيكية (المختبرات الطبية)">- العلوم المخبرية الإكلينيكية (المختبرات الطبية)</li>
-                        <li class="specialization-item" data-specialization="الأشعة التشخيصية">- الأشعة التشخيصية</li>
-                        <li class="specialization-item" data-specialization="العلاج الطبيعي">- العلاج الطبيعي</li>
-                        <li class="specialization-item" data-specialization="تقنية الأسنان">- تقنية الأسنان</li>
-                        <li class="specialization-item" data-specialization="الصحة العامة">- الصحة العامة</li>
-                    </ul>
-                    
-                    <h5>كلية التمريض</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="التمريض (متاح في أبها وفروع أخرى)">- التمريض (متاح في أبها وفروع أخرى)</li>
-                    </ul>
+                <div class="step-indicator">
+                    <span id="stepText">الخطوة 1: اختر الكلية</span>
                 </div>
                 
-                <div class="specialization-group">
-                    <h4>🔬 الكليات العلمية والهندسية والحاسوبية</h4>
-                    <h5>كلية الهندسة</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="الهندسة المدنية">- الهندسة المدنية</li>
-                        <li class="specialization-item" data-specialization="الهندسة الكهربائية">- الهندسة الكهربائية</li>
-                        <li class="specialization-item" data-specialization="الهندسة الميكانيكية">- الهندسة الميكانيكية</li>
-                        <li class="specialization-item" data-specialization="الهندسة الكيميائية">- الهندسة الكيميائية</li>
-                        <li class="specialization-item" data-specialization="الهندسة الصناعية">- الهندسة الصناعية</li>
-                        <li class="specialization-item" data-specialization="هندسة السلامة المهنية">- هندسة السلامة المهنية</li>
-                    </ul>
-                    
-                    <h5>كلية علوم الحاسب</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="علوم الحاسب">- علوم الحاسب</li>
-                        <li class="specialization-item" data-specialization="نظم المعلومات">- نظم المعلومات</li>
-                        <li class="specialization-item" data-specialization="هندسة الحاسب">- هندسة الحاسب</li>
-                        <li class="specialization-item" data-specialization="هندسة الشبكات والاتصالات">- هندسة الشبكات والاتصالات</li>
-                        <li class="specialization-item" data-specialization="الأمن السيبراني">- الأمن السيبراني</li>
-                        <li class="specialization-item" data-specialization="الذكاء الاصطناعي">- الذكاء الاصطناعي</li>
-                    </ul>
-                    
-                    <h5>كلية العلوم</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="الأحياء">- الأحياء</li>
-                        <li class="specialization-item" data-specialization="الكيمياء">- الكيمياء</li>
-                        <li class="specialization-item" data-specialization="الفيزياء">- الفيزياء</li>
-                        <li class="specialization-item" data-specialization="الرياضيات">- الرياضيات</li>
-                        <li class="specialization-item" data-specialization="الرياضيات المالية والعلوم الاكتوارية">- الرياضيات المالية والعلوم الاكتوارية</li>
-                    </ul>
+                <!-- عرض الكليات -->
+                <div class="colleges-container active" id="collegesContainer">
+                    <div class="college-item" data-college="medical">
+                        <i class="fas fa-hospital"></i> الكليات الصحية والطبية
+                    </div>
+                    <div class="college-item" data-college="engineering">
+                        <i class="fas fa-cogs"></i> الكليات العلمية والهندسية والحاسوبية
+                    </div>
+                    <div class="college-item" data-college="business">
+                        <i class="fas fa-chart-line"></i> كليات الأعمال والقانون
+                    </div>
+                    <div class="college-item" data-college="humanities">
+                        <i class="fas fa-book-open"></i> الكليات الإنسانية والشرعية والتربوية
+                    </div>
+                    <div class="college-item" data-college="other">
+                        <i class="fas fa-building"></i> كليات أخرى
+                    </div>
                 </div>
                 
-                <div class="specialization-group">
-                    <h4>💼 كليات الأعمال والقانون</h4>
-                    <h5>كلية الأعمال (كلية الإدارة والأعمال)</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="إدارة الأعمال (عام)">- إدارة الأعمال (عام)</li>
-                        <li class="specialization-item" data-specialization="إدارة مالية">- إدارة مالية</li>
-                        <li class="specialization-item" data-specialization="المحاسبة (والمحاسبة المهنية)">- المحاسبة (والمحاسبة المهنية)</li>
-                        <li class="specialization-item" data-specialization="التسويق والتجارة الإلكترونية">- التسويق والتجارة الإلكترونية</li>
-                        <li class="specialization-item" data-specialization="الموارد البشرية">- الموارد البشرية</li>
-                        <li class="specialization-item" data-specialization="نظم المعلومات الإدارية">- نظم المعلومات الإدارية</li>
-                        <li class="specialization-item" data-specialization="العلوم المالية والبنكية">- العلوم المالية والبنكية</li>
-                    </ul>
+                <!-- عرض التخصصات حسب الكلية -->
+                <div class="specialties-container" id="specialtiesContainer">
+                    <button type="button" class="back-btn" id="backToCollegesBtn">
+                        <i class="fas fa-arrow-right"></i> العودة إلى قائمة الكليات
+                    </button>
                     
-                    <h5>كلية الحقوق</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="القانون">- القانون</li>
-                    </ul>
-                </div>
-                
-                <div class="specialization-group">
-                    <h4>📚 الكليات الإنسانية والشرعية والتربوية</h4>
-                    <h5>كلية الشريعة وأصول الدين</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="الشريعة">- الشريعة</li>
-                        <li class="specialization-item" data-specialization="أصول الدين">- أصول الدين</li>
-                        <li class="specialization-item" data-specialization="العقيدة والمذاهب المعاصرة">- العقيدة والمذاهب المعاصرة</li>
-                        <li class="specialization-item" data-specialization="القرآن الكريم وعلومه">- القرآن الكريم وعلومه</li>
-                    </ul>
+                    <!-- التخصصات الصحية والطبية -->
+                    <div class="specialties-list" id="medicalSpecialties" style="display: none;">
+                        <div class="specialty-item" data-specialization="الطب والجراحة (MBBS)">
+                            <i class="fas fa-stethoscope"></i> الطب والجراحة (MBBS) - كلية الطب
+                        </div>
+                        <div class="specialty-item" data-specialization="طب الأسنان">
+                            <i class="fas fa-tooth"></i> طب الأسنان - كلية طب الأسنان
+                        </div>
+                        <div class="specialty-item" data-specialization="الصيدلة السريرية (دكتور صيدلي - Pharm.D)">
+                            <i class="fas fa-pills"></i> الصيدلة السريرية (دكتور صيدلي - Pharm.D) - كلية الصيدلة
+                        </div>
+                        <div class="specialty-item" data-specialization="الخدمات الطبية الطارئة">
+                            <i class="fas fa-ambulance"></i> الخدمات الطبية الطارئة - كلية العلوم الطبية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="التمريض">
+                            <i class="fas fa-user-nurse"></i> التمريض - كلية العلوم الطبية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="العلوم المخبرية الإكلينيكية (المختبرات الطبية)">
+                            <i class="fas fa-microscope"></i> العلوم المخبرية الإكلينيكية (المختبرات الطبية) - كلية العلوم الطبية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="الأشعة التشخيصية">
+                            <i class="fas fa-x-ray"></i> الأشعة التشخيصية - كلية العلوم الطبية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="العلاج الطبيعي">
+                            <i class="fas fa-hand-holding-heart"></i> العلاج الطبيعي - كلية العلوم الطبية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="تقنية الأسنان">
+                            <i class="fas fa-tooth"></i> تقنية الأسنان - كلية العلوم الطبية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="الصحة العامة">
+                            <i class="fas fa-shield-virus"></i> الصحة العامة - كلية العلوم الطبية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="التمريض (متاح في أبها وفروع أخرى)">
+                            <i class="fas fa-user-nurse"></i> التمريض (متاح في أبها وفروع أخرى) - كلية التمريض
+                        </div>
+                    </div>
                     
-                    <h5>كلية الآداب والعلوم الإنسانية</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="اللغة العربية">- اللغة العربية</li>
-                        <li class="specialization-item" data-specialization="التاريخ والحضارة">- التاريخ والحضارة</li>
-                        <li class="specialization-item" data-specialization="الجغرافيا">- الجغرافيا</li>
-                        <li class="specialization-item" data-specialization="الدراسات الإسلامية">- الدراسات الإسلامية</li>
-                        <li class="specialization-item" data-specialization="الإعلام والاتصال">- الإعلام والاتصال</li>
-                    </ul>
+                    <!-- التخصصات العلمية والهندسية والحاسوبية -->
+                    <div class="specialties-list" id="engineeringSpecialties" style="display: none;">
+                        <div class="specialty-item" data-specialization="الهندسة المدنية">
+                            <i class="fas fa-hard-hat"></i> الهندسة المدنية - كلية الهندسة
+                        </div>
+                        <div class="specialty-item" data-specialization="الهندسة الكهربائية">
+                            <i class="fas fa-bolt"></i> الهندسة الكهربائية - كلية الهندسة
+                        </div>
+                        <div class="specialty-item" data-specialization="الهندسة الميكانيكية">
+                            <i class="fas fa-cog"></i> الهندسة الميكانيكية - كلية الهندسة
+                        </div>
+                        <div class="specialty-item" data-specialization="الهندسة الكيميائية">
+                            <i class="fas fa-flask"></i> الهندسة الكيميائية - كلية الهندسة
+                        </div>
+                        <div class="specialty-item" data-specialization="الهندسة الصناعية">
+                            <i class="fas fa-industry"></i> الهندسة الصناعية - كلية الهندسة
+                        </div>
+                        <div class="specialty-item" data-specialization="هندسة السلامة المهنية">
+                            <i class="fas fa-shield-alt"></i> هندسة السلامة المهنية - كلية الهندسة
+                        </div>
+                        <div class="specialty-item" data-specialization="علوم الحاسب">
+                            <i class="fas fa-laptop-code"></i> علوم الحاسب - كلية علوم الحاسب
+                        </div>
+                        <div class="specialty-item" data-specialization="نظم المعلومات">
+                            <i class="fas fa-database"></i> نظم المعلومات - كلية علوم الحاسب
+                        </div>
+                        <div class="specialty-item" data-specialization="هندسة الحاسب">
+                            <i class="fas fa-microchip"></i> هندسة الحاسب - كلية علوم الحاسب
+                        </div>
+                        <div class="specialty-item" data-specialization="هندسة الشبكات والاتصالات">
+                            <i class="fas fa-network-wired"></i> هندسة الشبكات والاتصالات - كلية علوم الحاسب
+                        </div>
+                        <div class="specialty-item" data-specialization="الأمن السيبراني">
+                            <i class="fas fa-shield-alt"></i> الأمن السيبراني - كلية علوم الحاسب
+                        </div>
+                        <div class="specialty-item" data-specialization="الذكاء الاصطناعي">
+                            <i class="fas fa-robot"></i> الذكاء الاصطناعي - كلية علوم الحاسب
+                        </div>
+                        <div class="specialty-item" data-specialization="الأحياء">
+                            <i class="fas fa-dna"></i> الأحياء - كلية العلوم
+                        </div>
+                        <div class="specialty-item" data-specialization="الكيمياء">
+                            <i class="fas fa-atom"></i> الكيمياء - كلية العلوم
+                        </div>
+                        <div class="specialty-item" data-specialization="الفيزياء">
+                            <i class="fas fa-atom"></i> الفيزياء - كلية العلوم
+                        </div>
+                        <div class="specialty-item" data-specialization="الرياضيات">
+                            <i class="fas fa-square-root-alt"></i> الرياضيات - كلية العلوم
+                        </div>
+                        <div class="specialty-item" data-specialization="الرياضيات المالية والعلوم الاكتوارية">
+                            <i class="fas fa-calculator"></i> الرياضيات المالية والعلوم الاكتوارية - كلية العلوم
+                        </div>
+                    </div>
                     
-                    <h5>كلية اللغات والترجمة</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="اللغة الإنجليزية (لغويات تطبيقية وأدب)">- اللغة الإنجليزية (لغويات تطبيقية وأدب)</li>
-                        <li class="specialization-item" data-specialization="الترجمة">- الترجمة</li>
-                        <li class="specialization-item" data-specialization="اللغات الحديثة (مثل اللغة الصينية)">- اللغات الحديثة (مثل اللغة الصينية)</li>
-                    </ul>
+                    <!-- التخصصات الأعمال والقانون -->
+                    <div class="specialties-list" id="businessSpecialties" style="display: none;">
+                        <div class="specialty-item" data-specialization="إدارة الأعمال (عام)">
+                            <i class="fas fa-briefcase"></i> إدارة الأعمال (عام) - كلية الأعمال
+                        </div>
+                        <div class="specialty-item" data-specialization="إدارة مالية">
+                            <i class="fas fa-money-bill-wave"></i> إدارة مالية - كلية الأعمال
+                        </div>
+                        <div class="specialty-item" data-specialization="المحاسبة (والمحاسبة المهنية)">
+                            <i class="fas fa-calculator"></i> المحاسبة (والمحاسبة المهنية) - كلية الأعمال
+                        </div>
+                        <div class="specialty-item" data-specialization="التسويق والتجارة الإلكترونية">
+                            <i class="fas fa-shopping-cart"></i> التسويق والتجارة الإلكترونية - كلية الأعمال
+                        </div>
+                        <div class="specialty-item" data-specialization="الموارد البشرية">
+                            <i class="fas fa-users"></i> الموارد البشرية - كلية الأعمال
+                        </div>
+                        <div class="specialty-item" data-specialization="نظم المعلومات الإدارية">
+                            <i class="fas fa-chart-bar"></i> نظم المعلومات الإدارية - كلية الأعمال
+                        </div>
+                        <div class="specialty-item" data-specialization="العلوم المالية والبنكية">
+                            <i class="fas fa-university"></i> العلوم المالية والبنكية - كلية الأعمال
+                        </div>
+                        <div class="specialty-item" data-specialization="القانون">
+                            <i class="fas fa-gavel"></i> القانون - كلية الحقوق
+                        </div>
+                    </div>
                     
-                    <h5>كلية التربية</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="التربية (إدارة تربوية، مناهج وطرق تدريس)">- التربية (إدارة تربوية، مناهج وطرق تدريس)</li>
-                        <li class="specialization-item" data-specialization="علم النفس">- علم النفس</li>
-                        <li class="specialization-item" data-specialization="التربية الخاصة">- التربية الخاصة</li>
-                        <li class="specialization-item" data-specialization="تقنيات التعليم">- تقنيات التعليم</li>
-                        <li class="specialization-item" data-specialization="الطفولة المبكرة">- الطفولة المبكرة</li>
-                    </ul>
-                </div>
-                
-                <div class="specialization-group">
-                    <h4>🏛️ كليات أخرى</h4>
-                    <h5>كلية العمارة والتخطيط</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="الهندسة المعمارية">- الهندسة المعمارية</li>
-                    </ul>
+                    <!-- التخصصات الإنسانية والشرعية والتربوية -->
+                    <div class="specialties-list" id="humanitiesSpecialties" style="display: none;">
+                        <div class="specialty-item" data-specialization="الشريعة">
+                            <i class="fas fa-book"></i> الشريعة - كلية الشريعة وأصول الدين
+                        </div>
+                        <div class="specialty-item" data-specialization="أصول الدين">
+                            <i class="fas fa-mosque"></i> أصول الدين - كلية الشريعة وأصول الدين
+                        </div>
+                        <div class="specialty-item" data-specialization="العقيدة والمذاهب المعاصرة">
+                            <i class="fas fa-star-and-crescent"></i> العقيدة والمذاهب المعاصرة - كلية الشريعة وأصول الدين
+                        </div>
+                        <div class="specialty-item" data-specialization="القرآن الكريم وعلومه">
+                            <i class="fas fa-book-quran"></i> القرآن الكريم وعلومه - كلية الشريعة وأصول الدين
+                        </div>
+                        <div class="specialty-item" data-specialization="اللغة العربية">
+                            <i class="fas fa-language"></i> اللغة العربية - كلية الآداب والعلوم الإنسانية
+                        </div>
+                        <div class="specialty-item" data-specialization="التاريخ والحضارة">
+                            <i class="fas fa-landmark"></i> التاريخ والحضارة - كلية الآداب والعلوم الإنسانية
+                        </div>
+                        <div class="specialty-item" data-specialization="الجغرافيا">
+                            <i class="fas fa-globe-asia"></i> الجغرافيا - كلية الآداب والعلوم الإنسانية
+                        </div>
+                        <div class="specialty-item" data-specialization="الدراسات الإسلامية">
+                            <i class="fas fa-star-and-crescent"></i> الدراسات الإسلامية - كلية الآداب والعلوم الإنسانية
+                        </div>
+                        <div class="specialty-item" data-specialization="الإعلام والاتصال">
+                            <i class="fas fa-broadcast-tower"></i> الإعلام والاتصال - كلية الآداب والعلوم الإنسانية
+                        </div>
+                        <div class="specialty-item" data-specialization="اللغة الإنجليزية (لغويات تطبيقية وأدب)">
+                            <i class="fas fa-language"></i> اللغة الإنجليزية (لغويات تطبيقية وأدب) - كلية اللغات والترجمة
+                        </div>
+                        <div class="specialty-item" data-specialization="الترجمة">
+                            <i class="fas fa-exchange-alt"></i> الترجمة - كلية اللغات والترجمة
+                        </div>
+                        <div class="specialty-item" data-specialization="اللغات الحديثة (مثل اللغة الصينية)">
+                            <i class="fas fa-globe"></i> اللغات الحديثة (مثل اللغة الصينية) - كلية اللغات والترجمة
+                        </div>
+                        <div class="specialty-item" data-specialization="التربية (إدارة تربوية، مناهج وطرق تدريس)">
+                            <i class="fas fa-chalkboard-teacher"></i> التربية (إدارة تربوية، مناهج وطرق تدريس) - كلية التربية
+                        </div>
+                        <div class="specialty-item" data-specialization="علم النفس">
+                            <i class="fas fa-brain"></i> علم النفس - كلية التربية
+                        </div>
+                        <div class="specialty-item" data-specialization="التربية الخاصة">
+                            <i class="fas fa-hands-helping"></i> التربية الخاصة - كلية التربية
+                        </div>
+                        <div class="specialty-item" data-specialization="تقنيات التعليم">
+                            <i class="fas fa-laptop"></i> تقنيات التعليم - كلية التربية
+                        </div>
+                        <div class="specialty-item" data-specialization="الطفولة المبكرة">
+                            <i class="fas fa-child"></i> الطفولة المبكرة - كلية التربية
+                        </div>
+                    </div>
                     
-                    <h5>كلية السياحة والضيافة</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="السياحة والضيافة">- السياحة والضيافة</li>
-                    </ul>
-                    
-                    <h5>الكلية التطبيقية (الدبلوم والمشارك)</h5>
-                    <ul class="specialization-list">
-                        <li class="specialization-item" data-specialization="المحاسبة">- المحاسبة</li>
-                        <li class="specialization-item" data-specialization="الإدارة المكتبية">- الإدارة المكتبية</li>
-                        <li class="specialization-item" data-specialization="برمجة وتشغيل الحاسبات">- برمجة وتشغيل الحاسبات</li>
-                        <li class="specialization-item" data-specialization="تطوير تطبيقات الويب والجوال">- تطوير تطبيقات الويب والجوال</li>
-                    </ul>
+                    <!-- التخصصات الأخرى -->
+                    <div class="specialties-list" id="otherSpecialties" style="display: none;">
+                        <div class="specialty-item" data-specialization="الهندسة المعمارية">
+                            <i class="fas fa-archway"></i> الهندسة المعمارية - كلية العمارة والتخطيط
+                        </div>
+                        <div class="specialty-item" data-specialization="السياحة والضيافة">
+                            <i class="fas fa-umbrella-beach"></i> السياحة والضيافة - كلية السياحة والضيافة
+                        </div>
+                        <div class="specialty-item" data-specialization="المحاسبة">
+                            <i class="fas fa-calculator"></i> المحاسبة - الكلية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="الإدارة المكتبية">
+                            <i class="fas fa-folder-open"></i> الإدارة المكتبية - الكلية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="برمجة وتشغيل الحاسبات">
+                            <i class="fas fa-code"></i> برمجة وتشغيل الحاسبات - الكلية التطبيقية
+                        </div>
+                        <div class="specialty-item" data-specialization="تطوير تطبيقات الويب والجوال">
+                            <i class="fas fa-mobile-alt"></i> تطوير تطبيقات الويب والجوال - الكلية التطبيقية
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="selected-specialization" id="selectedSpecialization">
-                    تم اختيار التخصص: <span id="selectedSpecializationText"></span>
+                    <i class="fas fa-check-circle"></i> تم اختيار التخصص: <span id="selectedSpecializationText"></span>
                 </div>
             </div>
         </div>
@@ -509,6 +571,7 @@
     </div>
 
     <script>
+        // عناصر DOM
         const form = document.getElementById('contactForm');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
@@ -516,47 +579,148 @@
         const selectedSpecialization = document.getElementById('selectedSpecialization');
         const selectedSpecializationText = document.getElementById('selectedSpecializationText');
         
-        // إضافة وظيفة عرض/إخفاء التخصصات
+        // عناصر التخصصات
         const specializationToggle = document.getElementById('specializationToggle');
         const specializationsContainer = document.getElementById('specializationsContainer');
+        const collegesContainer = document.getElementById('collegesContainer');
+        const specialtiesContainer = document.getElementById('specialtiesContainer');
+        const backToCollegesBtn = document.getElementById('backToCollegesBtn');
+        const stepText = document.getElementById('stepText');
         
+        // جميع قوائم التخصصات
+        const specialtiesLists = {
+            medical: document.getElementById('medicalSpecialties'),
+            engineering: document.getElementById('engineeringSpecialties'),
+            business: document.getElementById('businessSpecialties'),
+            humanities: document.getElementById('humanitiesSpecialties'),
+            other: document.getElementById('otherSpecialties')
+        };
+        
+        // جميع عناصر الكليات
+        const collegeItems = document.querySelectorAll('.college-item');
+        
+        // وظيفة عرض/إخفاء قسم التخصصات
         specializationToggle.addEventListener('click', function() {
             specializationsContainer.classList.toggle('active');
             if (specializationsContainer.classList.contains('active')) {
-                specializationToggle.textContent = 'إخفاء التخصصات والبرامج المتاحة';
+                specializationToggle.innerHTML = '<i class="fas fa-times"></i> إغلاق قائمة الكليات';
+                resetToCollegesView();
             } else {
-                specializationToggle.textContent = 'عرض التخصصات والبرامج المتاحة';
+                specializationToggle.innerHTML = '<i class="fas fa-university"></i> عرض الكليات المتاحة';
             }
         });
-
-        // إضافة وظيفة اختيار التخصص بالنقر
-        const specializationItems = document.querySelectorAll('.specialization-item');
         
-        specializationItems.forEach(item => {
+        // وظيفة العودة إلى عرض الكليات
+        backToCollegesBtn.addEventListener('click', function() {
+            resetToCollegesView();
+        });
+        
+        // وظيفة إعادة تعيين العرض لعرض الكليات
+        function resetToCollegesView() {
+            // إخفاء قسم التخصصات وإظهار قسم الكليات
+            specialtiesContainer.classList.remove('active');
+            collegesContainer.classList.add('active');
+            
+            // إخفاء جميع قوائم التخصصات
+            Object.values(specialtiesLists).forEach(list => {
+                list.style.display = 'none';
+            });
+            
+            // إزالة التحديد من جميع الكليات
+            collegeItems.forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // تحديث نص الخطوة
+            stepText.textContent = 'الخطوة 1: اختر الكلية';
+            stepText.className = 'current-step';
+        }
+        
+        // إضافة حدث النقر على عناصر الكليات
+        collegeItems.forEach(item => {
             item.addEventListener('click', function() {
-                // إزالة التحديد من جميع العناصر
-                specializationItems.forEach(i => i.classList.remove('selected'));
+                const collegeType = this.getAttribute('data-college');
                 
-                // إضافة التحديد للعنصر المختار
+                // تحديث التحديد
+                collegeItems.forEach(i => i.classList.remove('selected'));
                 this.classList.add('selected');
                 
-                // تعيين التخصص في حقل الإدخال
-                const specialization = this.getAttribute('data-specialization');
-                specializationInput.value = specialization;
+                // الانتقال إلى عرض التخصصات
+                collegesContainer.classList.remove('active');
+                specialtiesContainer.classList.add('active');
                 
-                // عرض التخصص المختار
-                selectedSpecializationText.textContent = specialization;
-                selectedSpecialization.style.display = 'block';
-
-                // إخفاء القائمة وتحديث زر العرض
-                specializationsContainer.classList.remove('active');
-                specializationToggle.textContent = 'عرض التخصصات والبرامج المتاحة';
+                // إخفاء جميع قوائم التخصصات ثم إظهار القائمة المحددة
+                Object.values(specialtiesLists).forEach(list => {
+                    list.style.display = 'none';
+                });
                 
-                // تمرير التركيز إلى حقل الاسم العربي لتسهيل متابعة تعبئة البيانات
-                document.querySelector('input[name="الاسم العربي"]').focus();
+                specialtiesLists[collegeType].style.display = 'block';
+                
+                // تحديث نص الخطوة بناءً على الكلية المختارة
+                let collegeName = '';
+                switch(collegeType) {
+                    case 'medical':
+                        collegeName = 'الكليات الصحية والطبية';
+                        break;
+                    case 'engineering':
+                        collegeName = 'الكليات العلمية والهندسية والحاسوبية';
+                        break;
+                    case 'business':
+                        collegeName = 'كليات الأعمال والقانون';
+                        break;
+                    case 'humanities':
+                        collegeName = 'الكليات الإنسانية والشرعية والتربوية';
+                        break;
+                    case 'other':
+                        collegeName = 'كليات أخرى';
+                        break;
+                }
+                
+                stepText.textContent = `الخطوة 2: اختر التخصص من ${collegeName}`;
+                stepText.className = 'current-step';
+                
+                // تمرير التركيز إلى زر العودة
+                backToCollegesBtn.focus();
             });
         });
-
+        
+        // إضافة حدث النقر على عناصر التخصصات
+        Object.values(specialtiesLists).forEach(list => {
+            const specialtyItems = list.querySelectorAll('.specialty-item');
+            
+            specialtyItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // إزالة التحديد من جميع التخصصات
+                    Object.values(specialtiesLists).forEach(l => {
+                        const items = l.querySelectorAll('.specialty-item');
+                        items.forEach(i => i.classList.remove('selected'));
+                    });
+                    
+                    // إضافة التحديد للتخصص المختار
+                    this.classList.add('selected');
+                    
+                    // تعيين التخصص في حقل الإدخال
+                    const specialization = this.getAttribute('data-specialization');
+                    specializationInput.value = specialization;
+                    
+                    // عرض التخصص المختار
+                    selectedSpecializationText.textContent = specialization;
+                    selectedSpecialization.style.display = 'block';
+                    
+                    // إغلاق قائمة التخصصات
+                    specializationsContainer.classList.remove('active');
+                    specializationToggle.innerHTML = '<i class="fas fa-university"></i> عرض الكليات المتاحة';
+                    
+                    // تمرير التركيز إلى حقل الاسم العربي
+                    document.querySelector('input[name="الاسم العربي"]').focus();
+                    
+                    // إعادة تعيين العرض
+                    setTimeout(resetToCollegesView, 500);
+                });
+            });
+        });
+        
+        // إرسال النموذج
         form.addEventListener("submit", async function (event) {
             event.preventDefault(); 
             
@@ -578,7 +742,12 @@
                     form.reset(); 
                     // إعادة تعيين التخصص المختار
                     selectedSpecialization.style.display = 'none';
-                    specializationItems.forEach(i => i.classList.remove('selected'));
+                    collegeItems.forEach(i => i.classList.remove('selected'));
+                    Object.values(specialtiesLists).forEach(list => {
+                        const items = list.querySelectorAll('.specialty-item');
+                        items.forEach(i => i.classList.remove('selected'));
+                    });
+                    resetToCollegesView();
                 } else {
                     errorMessage.style.display = 'block';
                 }
@@ -592,4 +761,4 @@
         });
     </script>
 </body>
-  </html>
+    </html>
