@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام التسجيل الجامعي - عمادة التسجيل والقبول جامعة الملك خالد</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: right;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        /* إضافة نمط للترجمة الإنجليزية */
+        .subtitle-en {
+            color: #555;
+            text-align: center;
+            font-size: 14px;
+            font-weight: normal;
+            margin-top: -20px; 
+            margin-bottom: 30px;
+            direction: ltr; 
+            display: block;
+        }
+        h3 {
+             color: #4CAF50; 
+             text-align: center; 
+             margin-top: 30px; 
+             margin-bottom: 20px;
+             padding-top: 10px;
+             border-top: 1px dashed #ddd;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+        input:not([type="file"]), textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            autocomplete: on;
+        }
+        input[type="file"] {
+            padding-right: 0;
+        }
+        /* إضافة أنماط لحقل الـ Select الجديد */
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #45a049, #4CAF50);
+        }
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+        .contact-info {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        .contact-info a {
+            color: #25d366; 
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            display: block;
+        }
+        .whatsapp-icon {
+            font-size: 24px;
+            margin-left: 5px;
+        }
+        .payment-details {
+            background: #e6ffe6; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            border: 1px solid #4CAF50;
+            text-align: center;
+        }
+        .qr-code-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .qr-code-display img {
+            max-width: 150px; 
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .bank-details-text {
+            text-align: right;
+            width: 100%;
+            padding: 0 10px;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .bank-details-text p {
+             margin: 5px 0;
+             font-size: 15px;
+        }
+        /* إضافة أنماط قسم التخصصات */
+        .specialization-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .specialization-title {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .specialization-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .specialization-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        .specialization-list li:last-child {
+            border-bottom: none;
+        }
+        .specialization-toggle {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: background 0.3s;
+        }
+        .specialization-toggle:hover {
+            background: linear-gradient(135deg, #45a049, #4CAF50);
+        }
+        .specializations-container {
+            display: none;
+        }
+        .specializations-container.active {
+            display: block;
+        }
+        .specialization-group {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f0f8f0;
+        }
+        .specialization-group h4, .specialization-group h5 {
+            color: #2c5e2c;
+            margin-bottom: 10px;
+        }
+        .specialization-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        .specialization-item:hover {
+            background-color: #e6ffe6;
+            border-color: #4CAF50;
+        }
+        .specialization-item.selected {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        .selected-specialization {
+            background-color: #e6ffe6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        .selected-specialization span {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🎓 البيانات المطلوبة في التقديم - عمادة التسجيل والقبول جامعة الملك خالد</h2>
+        <span class="subtitle-en">Required Data for Admission - Deanship of Admission and Registration, King Khalid University</span>
+        
+        <div class="specialization-section">
+            <button type="button" class="specialization-toggle" id="specializationToggle">
+                عرض التخصصات والبرامج المتاحة
+            </button>
+            
+            <div class="specializations-container" id="specializationsContainer">
+                <h3 class="specialization-title">التخصصات والبرامج المتاحة في جامعة الملك خالد</h3>
+                
+                <div class="specialization-group">
+                    <h4>🔬 الكليات الصحية والطبية</h4>
+                    <h5>كلية الطب</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="الطب والجراحة (MBBS)">- الطب والجراحة (MBBS)</li>
+                    </ul>
+                    
+                    <h5>كلية طب الأسنان</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="طب الأسنان">- طب الأسنان</li>
+                    </ul>
+                    
+                    <h5>كلية الصيدلة</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="الصيدلة السريرية (دكتور صيدلي - Pharm.D)">- الصيدلة السريرية (دكتور صيدلي - Pharm.D)</li>
+                    </ul>
+                    
+                    <h5>كلية العلوم الطبية التطبيقية</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="الخدمات الطبية الطارئة">- الخدمات الطبية الطارئة</li>
+                        <li class="specialization-item" data-specialization="التمريض">- التمريض</li>
+                        <li class="specialization-item" data-specialization="العلوم المخبرية الإكلينيكية (المختبرات الطبية)">- العلوم المخبرية الإكلينيكية (المختبرات الطبية)</li>
+                        <li class="specialization-item" data-specialization="الأشعة التشخيصية">- الأشعة التشخيصية</li>
+                        <li class="specialization-item" data-specialization="العلاج الطبيعي">- العلاج الطبيعي</li>
+                        <li class="specialization-item" data-specialization="تقنية الأسنان">- تقنية الأسنان</li>
+                        <li class="specialization-item" data-specialization="الصحة العامة">- الصحة العامة</li>
+                    </ul>
+                    
+                    <h5>كلية التمريض</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="التمريض (متاح في أبها وفروع أخرى)">- التمريض (متاح في أبها وفروع أخرى)</li>
+                    </ul>
+                </div>
+                
+                <div class="specialization-group">
+                    <h4>🔬 الكليات العلمية والهندسية والحاسوبية</h4>
+                    <h5>كلية الهندسة</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="الهندسة المدنية">- الهندسة المدنية</li>
+                        <li class="specialization-item" data-specialization="الهندسة الكهربائية">- الهندسة الكهربائية</li>
+                        <li class="specialization-item" data-specialization="الهندسة الميكانيكية">- الهندسة الميكانيكية</li>
+                        <li class="specialization-item" data-specialization="الهندسة الكيميائية">- الهندسة الكيميائية</li>
+                        <li class="specialization-item" data-specialization="الهندسة الصناعية">- الهندسة الصناعية</li>
+                        <li class="specialization-item" data-specialization="هندسة السلامة المهنية">- هندسة السلامة المهنية</li>
+                    </ul>
+                    
+                    <h5>كلية علوم الحاسب</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="علوم الحاسب">- علوم الحاسب</li>
+                        <li class="specialization-item" data-specialization="نظم المعلومات">- نظم المعلومات</li>
+                        <li class="specialization-item" data-specialization="هندسة الحاسب">- هندسة الحاسب</li>
+                        <li class="specialization-item" data-specialization="هندسة الشبكات والاتصالات">- هندسة الشبكات والاتصالات</li>
+                        <li class="specialization-item" data-specialization="الأمن السيبراني">- الأمن السيبراني</li>
+                        <li class="specialization-item" data-specialization="الذكاء الاصطناعي">- الذكاء الاصطناعي</li>
+                    </ul>
+                    
+                    <h5>كلية العلوم</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="الأحياء">- الأحياء</li>
+                        <li class="specialization-item" data-specialization="الكيمياء">- الكيمياء</li>
+                        <li class="specialization-item" data-specialization="الفيزياء">- الفيزياء</li>
+                        <li class="specialization-item" data-specialization="الرياضيات">- الرياضيات</li>
+                        <li class="specialization-item" data-specialization="الرياضيات المالية والعلوم الاكتوارية">- الرياضيات المالية والعلوم الاكتوارية</li>
+                    </ul>
+                </div>
+                
+                <div class="specialization-group">
+                    <h4>💼 كليات الأعمال والقانون</h4>
+                    <h5>كلية الأعمال (كلية الإدارة والأعمال)</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="إدارة الأعمال (عام)">- إدارة الأعمال (عام)</li>
+                        <li class="specialization-item" data-specialization="إدارة مالية">- إدارة مالية</li>
+                        <li class="specialization-item" data-specialization="المحاسبة (والمحاسبة المهنية)">- المحاسبة (والمحاسبة المهنية)</li>
+                        <li class="specialization-item" data-specialization="التسويق والتجارة الإلكترونية">- التسويق والتجارة الإلكترونية</li>
+                        <li class="specialization-item" data-specialization="الموارد البشرية">- الموارد البشرية</li>
+                        <li class="specialization-item" data-specialization="نظم المعلومات الإدارية">- نظم المعلومات الإدارية</li>
+                        <li class="specialization-item" data-specialization="العلوم المالية والبنكية">- العلوم المالية والبنكية</li>
+                    </ul>
+                    
+                    <h5>كلية الحقوق</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="القانون">- القانون</li>
+                    </ul>
+                </div>
+                
+                <div class="specialization-group">
+                    <h4>📚 الكليات الإنسانية والشرعية والتربوية</h4>
+                    <h5>كلية الشريعة وأصول الدين</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="الشريعة">- الشريعة</li>
+                        <li class="specialization-item" data-specialization="أصول الدين">- أصول الدين</li>
+                        <li class="specialization-item" data-specialization="العقيدة والمذاهب المعاصرة">- العقيدة والمذاهب المعاصرة</li>
+                        <li class="specialization-item" data-specialization="القرآن الكريم وعلومه">- القرآن الكريم وعلومه</li>
+                    </ul>
+                    
+                    <h5>كلية الآداب والعلوم الإنسانية</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="اللغة العربية">- اللغة العربية</li>
+                        <li class="specialization-item" data-specialization="التاريخ والحضارة">- التاريخ والحضارة</li>
+                        <li class="specialization-item" data-specialization="الجغرافيا">- الجغرافيا</li>
+                        <li class="specialization-item" data-specialization="الدراسات الإسلامية">- الدراسات الإسلامية</li>
+                        <li class="specialization-item" data-specialization="الإعلام والاتصال">- الإعلام والاتصال</li>
+                    </ul>
+                    
+                    <h5>كلية اللغات والترجمة</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="اللغة الإنجليزية (لغويات تطبيقية وأدب)">- اللغة الإنجليزية (لغويات تطبيقية وأدب)</li>
+                        <li class="specialization-item" data-specialization="الترجمة">- الترجمة</li>
+                        <li class="specialization-item" data-specialization="اللغات الحديثة (مثل اللغة الصينية)">- اللغات الحديثة (مثل اللغة الصينية)</li>
+                    </ul>
+                    
+                    <h5>كلية التربية</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="التربية (إدارة تربوية، مناهج وطرق تدريس)">- التربية (إدارة تربوية، مناهج وطرق تدريس)</li>
+                        <li class="specialization-item" data-specialization="علم النفس">- علم النفس</li>
+                        <li class="specialization-item" data-specialization="التربية الخاصة">- التربية الخاصة</li>
+                        <li class="specialization-item" data-specialization="تقنيات التعليم">- تقنيات التعليم</li>
+                        <li class="specialization-item" data-specialization="الطفولة المبكرة">- الطفولة المبكرة</li>
+                    </ul>
+                </div>
+                
+                <div class="specialization-group">
+                    <h4>🏛️ كليات أخرى</h4>
+                    <h5>كلية العمارة والتخطيط</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="الهندسة المعمارية">- الهندسة المعمارية</li>
+                    </ul>
+                    
+                    <h5>كلية السياحة والضيافة</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="السياحة والضيافة">- السياحة والضيافة</li>
+                    </ul>
+                    
+                    <h5>الكلية التطبيقية (الدبلوم والمشارك)</h5>
+                    <ul class="specialization-list">
+                        <li class="specialization-item" data-specialization="المحاسبة">- المحاسبة</li>
+                        <li class="specialization-item" data-specialization="الإدارة المكتبية">- الإدارة المكتبية</li>
+                        <li class="specialization-item" data-specialization="برمجة وتشغيل الحاسبات">- برمجة وتشغيل الحاسبات</li>
+                        <li class="specialization-item" data-specialization="تطوير تطبيقات الويب والجوال">- تطوير تطبيقات الويب والجوال</li>
+                    </ul>
+                </div>
+                
+                <div class="selected-specialization" id="selectedSpecialization">
+                    تم اختيار التخصص: <span id="selectedSpecializationText"></span>
+                </div>
+            </div>
+        </div>
+        
+        <form id="contactForm" action="https://formspree.io/f/xrbnlnee" method="POST" enctype="multipart/form-data">
+            
+            <input type="hidden" name="_subject" value="🎓 تسجيل جامعي جديد - عمادة التسجيل والقبول جامعة الملك خالد">
+            
+            <div class="form-group">
+                <label>الاسم الكامل (عربي):</label>
+                <input type="text" name="الاسم العربي" required placeholder="" autocomplete="name">
+            </div>
+
+            <div class="form-group">
+                <label>الاسم الكامل (إنجليزي):</label>
+                <input type="text" name="الاسم الإنجليزي" required placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label>رقم الهوية:</label>
+                <input type="text" name="رقم الهوية" required placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label>رقم الهاتف:</label>
+                <input type="tel" name="رقم الهاتف" required placeholder="" autocomplete="tel">
+            </div>
+
+            <div class="form-group">
+                <label>رقم ولي الأمر:</label>
+                <input type="tel" name="رقم ولي الأمر" placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label>المنطقة الحالية:</label>
+                <input type="text" name="المنطقة الحالية" placeholder="" autocomplete="address-level2">
+            </div>
+
+            <div class="form-group">
+                <label>نوع الشهادة:</label>
+                <select name="نوع الشهادة" required>
+                    <option value="" disabled selected>اختر نوع الشهادة</option>
+                    <option value="ثانوية عامة">ثانوية عامة</option>
+                    <option value="دبلوم">دبلوم</option>
+                    <option value="بكالوريوس">بكالوريوس</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>الرقم الأكاديمي:</label>
+                <input type="text" name="الرقم الأكاديمي" placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label>التخصص المطلوب:</label>
+                <input type="text" name="التخصص المطلوب" id="specializationInput" required placeholder="">
+            </div>
+            
+            <div class="form-group">
+                <label>المعدل التراكمي:</label>
+                <input type="text" name="المعدل التراكمي" placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label>الدرجات (القدرات/التحصيلي):</label>
+                <input type="text" name="الدرجات" placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label>البريد الإلكتروني للمتقدم:</label>
+                <input type="email" name="بريد المتقدم" required placeholder="" autocomplete="email">
+            </div>
+            
+            <button type="submit" class="submit-btn">📤 إرسال البيانات إلى عمادة التسجيل والقبول</button>
+        </form>
+
+        <div id="successMessage" class="success">
+            <strong>✅ تم الإرسال بنجاح!</strong>
+            <br>
+            <span style="font-size: 14px;">شكرا لتقديمك سيتم إشعاركم على الايميل والتواصل معكم من قبل موظف الشؤون الادارية والمالية لتأكيد طلب القبول وستكمال الإجرائات وابلاغكم اولا باول بكل جديد بكافه الإجرائات والمستجدات.</span>
+        </div>
+
+        <div id="errorMessage" class="error">
+            <strong>❌ فشل الإرسال!</strong>
+            <br>
+            <span style="font-size: 14px;">حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.</span>
+        </div>
+        
+        <div class="contact-info">
+            <a href="https://wa.me/966580422371" target="_blank" rel="noopener noreferrer">
+                <span class="whatsapp-icon">💬</span> **للتواصل اضغط هنا**
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('contactForm');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const specializationInput = document.getElementById('specializationInput');
+        const selectedSpecialization = document.getElementById('selectedSpecialization');
+        const selectedSpecializationText = document.getElementById('selectedSpecializationText');
+        
+        // إضافة وظيفة عرض/إخفاء التخصصات
+        const specializationToggle = document.getElementById('specializationToggle');
+        const specializationsContainer = document.getElementById('specializationsContainer');
+        
+        specializationToggle.addEventListener('click', function() {
+            specializationsContainer.classList.toggle('active');
+            if (specializationsContainer.classList.contains('active')) {
+                specializationToggle.textContent = 'إخفاء التخصصات والبرامج المتاحة';
+            } else {
+                specializationToggle.textContent = 'عرض التخصصات والبرامج المتاحة';
+            }
+        });
+
+        // إضافة وظيفة اختيار التخصص بالنقر
+        const specializationItems = document.querySelectorAll('.specialization-item');
+        
+        specializationItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // إزالة التحديد من جميع العناصر
+                specializationItems.forEach(i => i.classList.remove('selected'));
+                
+                // إضافة التحديد للعنصر المختار
+                this.classList.add('selected');
+                
+                // تعيين التخصص في حقل الإدخال
+                const specialization = this.getAttribute('data-specialization');
+                specializationInput.value = specialization;
+                
+                // عرض التخصص المختار
+                selectedSpecializationText.textContent = specialization;
+                selectedSpecialization.style.display = 'block';
+
+                // إخفاء القائمة وتحديث زر العرض
+                specializationsContainer.classList.remove('active');
+                specializationToggle.textContent = 'عرض التخصصات والبرامج المتاحة';
+                
+                // تمرير التركيز إلى حقل الاسم العربي لتسهيل متابعة تعبئة البيانات
+                document.querySelector('input[name="الاسم العربي"]').focus();
+            });
+        });
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault(); 
+            
+            successMessage.style.display = 'none';
+            errorMessage.style.display = 'none';
+
+            const submitButton = form.querySelector('.submit-btn');
+            submitButton.disabled = true;
+            submitButton.textContent = 'جاري الإرسال... ⏳';
+            
+            try {
+                const response = await fetch(form.action, {
+                    method: form.method,
+                    body: new FormData(form),
+                });
+
+                if (response.ok) {
+                    successMessage.style.display = 'block'; 
+                    form.reset(); 
+                    // إعادة تعيين التخصص المختار
+                    selectedSpecialization.style.display = 'none';
+                    specializationItems.forEach(i => i.classList.remove('selected'));
+                } else {
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Network Error:', error);
+                errorMessage.style.display = 'block';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = '📤 إرسال البيانات إلى عمادة التسجيل والقبول';
+            }
+        });
+    </script>
+</body>
+  </html>
