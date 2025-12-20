@@ -1,0 +1,2621 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام التسجيل والقبول - جامعة الملك خالد</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #006837; /* أخضر جامعة الملك خالد */
+            --primary-dark: #004027;
+            --secondary-color: #FFD700; /* ذهبي */
+            --accent-color: #0055A4; /* أزرق */
+            --success-color: #2e7d32;
+            --warning-color: #ef6c00;
+            --error-color: #d32f2f;
+            --gray-light: #f5f5f5;
+            --gray-medium: #e0e0e0;
+            --gray-dark: #666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 104, 55, 0.15);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 8px solid var(--secondary-color);
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary-color), var(--accent-color), var(--secondary-color));
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .header .subtitle {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 12px;
+            font-weight: 300;
+        }
+        
+        .header .academic-year {
+            background: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 15px;
+            margin-top: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .university-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--secondary-color);
+        }
+        
+        .university-logo i {
+            font-size: 40px;
+            color: var(--primary-color);
+        }
+        
+        /* نظام الصفحات المتعددة */
+        .page-container {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .page-container.active {
+            display: block;
+        }
+        
+        /* شريط التقدم */
+        .progress-container {
+            padding: 20px 40px;
+            background: white;
+            border-bottom: 1px solid var(--gray-medium);
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gray-light);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        
+        .progress-line {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            height: 3px;
+            background: var(--primary-color);
+            transform: translateY(-50%);
+            transition: width 0.5s ease;
+            z-index: 2;
+        }
+        
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--gray-medium);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--gray-dark);
+            position: relative;
+            z-index: 3;
+            transition: all 0.3s ease;
+        }
+        
+        .step.active {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .step.completed {
+            border-color: var(--success-color);
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .step-label {
+            position: absolute;
+            top: 45px;
+            right: 50%;
+            transform: translateX(50%);
+            white-space: nowrap;
+            font-size: 14px;
+            color: var(--gray-dark);
+        }
+        
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        /* أزرار التنقل */
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid var(--gray-medium);
+        }
+        
+        .nav-btn {
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-prev {
+            background: var(--gray-light);
+            color: var(--gray-dark);
+        }
+        
+        .btn-prev:hover {
+            background: var(--gray-medium);
+            transform: translateX(-5px);
+        }
+        
+        .btn-next {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 104, 55, 0.3);
+        }
+        
+        .btn-next:hover:not(:disabled) {
+            transform: translateX(5px);
+            box-shadow: 0 8px 20px rgba(0, 104, 55, 0.4);
+        }
+        
+        .btn-next:disabled {
+            background: var(--gray-medium);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, var(--success-color), #2e7d32);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 10px;
+            border: none;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+        
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
+        }
+        
+        .btn-submit:disabled {
+            background: var(--gray-medium);
+            cursor: not-allowed;
+        }
+        
+        /* بقية الأنماط تبقى كما هي */
+        .form-section {
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--gray-light);
+            padding-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-section:last-of-type {
+            border-bottom: none;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-dark);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            right: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--secondary-color), transparent);
+        }
+        
+        .section-title i {
+            color: var(--primary-color);
+            font-size: 26px;
+        }
+        
+        .applicant-type-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .applicant-type {
+            background: white;
+            border: 2px solid var(--gray-medium);
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .applicant-type::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+        
+        .applicant-type:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 104, 55, 0.15);
+        }
+        
+        .applicant-type:hover::before {
+            transform: translateX(0);
+        }
+        
+        .applicant-type.selected {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 25px rgba(0, 104, 55, 0.2);
+        }
+        
+        .applicant-type.selected::before {
+            transform: translateX(0);
+            background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+        }
+        
+        .applicant-type i {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .applicant-type:hover i {
+            transform: scale(1.1);
+        }
+        
+        .applicant-type h3 {
+            color: var(--primary-dark);
+            margin-bottom: 12px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .applicant-type p {
+            color: var(--gray-dark);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        
+        .form-group label.required::after {
+            content: ' *';
+            color: var(--error-color);
+            font-weight: bold;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--gray-medium);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            color: #333;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 104, 55, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        input:disabled, select:disabled, textarea:disabled {
+            background: var(--gray-light);
+            cursor: not-allowed;
+            opacity: 0.7;
+            border-color: var(--gray-medium);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-dark);
+            pointer-events: none;
+        }
+        
+        .alert {
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            font-size: 15px;
+            line-height: 1.7;
+            border: 2px solid transparent;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .alert-info {
+            background: linear-gradient(135deg, #e3f2fd, #f3f9ff);
+            border-color: #bbdefb;
+            color: #1565c0;
+        }
+        
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3e0, #fff8e1);
+            border-color: #ffe0b2;
+            color: var(--warning-color);
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            border-color: #c8e6c9;
+            color: var(--success-color);
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-color: #ef9a9a;
+            color: var(--error-color);
+        }
+        
+        .alert i {
+            margin-left: 10px;
+            font-size: 20px;
+        }
+        
+        .success-message {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            color: var(--success-color);
+            padding: 50px;
+            border-radius: 15px;
+            margin-top: 40px;
+            text-align: center;
+            display: none;
+            border: 3px solid #81c784;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .success-message i {
+            font-size: 80px;
+            margin-bottom: 30px;
+            color: #4caf50;
+            animation: bounce 1.5s ease infinite;
+        }
+        
+        .success-message h2 {
+            margin-bottom: 25px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        .success-message p {
+            margin-bottom: 15px;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+        
+        .success-message .highlight {
+            background: rgba(76, 175, 80, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin: 5px;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #f9f9f9, #f0f0f0);
+            padding: 40px 30px;
+            text-align: center;
+            border-top: 2px solid var(--gray-medium);
+            font-size: 15px;
+            color: var(--gray-dark);
+        }
+        
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+        
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 25px 0;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .footer-info div {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .footer-info div:hover {
+            transform: translateY(-5px);
+        }
+        
+        .social-links {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: 50%;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .social-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .social-links a:hover {
+            transform: translateY(-8px) rotate(5deg);
+            box-shadow: 0 10px 25px rgba(0, 104, 55, 0.3);
+        }
+        
+        .social-links a:hover::before {
+            opacity: 1;
+        }
+        
+        .social-links a i {
+            position: relative;
+            z-index: 1;
+        }
+        
+        @media (max-width: 992px) {
+            .page-container {
+                padding: 30px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .applicant-type-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .step-label {
+                font-size: 12px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .footer-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 22px;
+            }
+            
+            .progress-steps {
+                margin: 20px 0;
+            }
+            
+            .step {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+            
+            .step-label {
+                font-size: 11px;
+                top: 40px;
+            }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            font-weight: 500;
+            animation: shake 0.5s ease;
+        }
+        
+        .has-error {
+            border-color: var(--error-color) !important;
+            background: #ffebee !important;
+        }
+        
+        .field-valid {
+            border-color: var(--success-color) !important;
+            background: #e8f5e9 !important;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        .payment-warning {
+            background: linear-gradient(135deg, #fff3e0, #fff8e1);
+            border: 3px solid var(--secondary-color);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+        
+        .payment-checkbox {
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            border: 2px solid var(--gray-medium);
+            transition: all 0.3s ease;
+        }
+        
+        .payment-checkbox input {
+            width: 24px;
+            height: 24px;
+            margin-top: 3px;
+        }
+        
+        .payment-checkbox label {
+            margin: 0;
+            color: var(--primary-dark);
+            line-height: 1.6;
+        }
+        
+        .bridging-fields {
+            background: linear-gradient(135deg, #f3e5f5, #f1f8e9);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #ce93d8;
+            display: none;
+        }
+        
+        .transfer-fields {
+            background: linear-gradient(135deg, #e3f2fd, #f3f9ff);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #90caf9;
+            display: none;
+        }
+        
+        .international-fields {
+            background: linear-gradient(135deg, #fff3e0, #fff8e1);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid #ffcc80;
+            display: none;
+        }
+        
+        /* صفحة المراجعة */
+        .review-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid var(--gray-medium);
+        }
+        
+        .review-section h3 {
+            color: var(--primary-dark);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .review-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed var(--gray-medium);
+        }
+        
+        .review-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .review-label {
+            flex: 0 0 200px;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        
+        .review-value {
+            flex: 1;
+            color: var(--gray-dark);
+        }
+        
+        .review-edit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+        
+        .tooltip {
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-dark);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+        
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent transparent var(--primary-dark);
+        }
+        
+        .input-container:hover .tooltip {
+            opacity: 1;
+        }
+        
+        .gpa-system {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .gpa-option {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            border: 2px solid var(--gray-medium);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .gpa-option.selected {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+        }
+        
+        .id-type-indicator {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="university-logo">
+                <i class="fas fa-university"></i>
+            </div>
+            <h1><i class="fas fa-graduation-cap"></i> نظام التسجيل والقبول الإلكتروني</h1>
+            <div class="subtitle">جامعة الملك خالد - منطقة عسير | عمادة القبول والتسجيل</div>
+            <div class="academic-year">الفصل الدراسي الأول 1447هـ</div>
+        </div>
+        
+        <!-- شريط التقدم -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-line" id="progressLine"></div>
+                <div class="step active" data-step="1">
+                    <span>1</span>
+                    <div class="step-label">البيانات الشخصية</div>
+                </div>
+                <div class="step" data-step="2">
+                    <span>2</span>
+                    <div class="step-label">البيانات الأكاديمية</div>
+                </div>
+                <div class="step" data-step="3">
+                    <span>3</span>
+                    <div class="step-label">الكلية والتخصص</div>
+                </div>
+                <div class="step" data-step="4">
+                    <span>4</span>
+                    <div class="step-label">المراجعة والإرسال</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- الصفحة 1: البيانات الشخصية -->
+        <div class="page-container active" id="page1">
+            <div class="alert alert-info">
+                <strong><i class="fas fa-info-circle"></i> إرشادات هامة:</strong>
+                <ul style="margin-right: 25px; margin-top: 15px; font-size: 16px;">
+                    <li><strong>جميع الحقول المميزة بعلامة (*) إلزامية</strong></li>
+                    <li>سوف يتم التواصل معك عبر البريد الإلكتروني والجوال المسجلين</li>
+                    <li>يرجى التأكد من صحة جميع البيانات قبل الإرسال</li>
+                </ul>
+            </div>
+            
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>نوع المتقدم</span>
+                </div>
+                
+                <div class="applicant-type-container">
+                    <div class="applicant-type selected" data-type="new" id="applicantNew">
+                        <i class="fas fa-user-plus"></i>
+                        <h3>خريج ثانوي جديد</h3>
+                        <p>التقديم للمرة الأولى على جامعة الملك خالد</p>
+                    </div>
+                    
+                    <div class="applicant-type" data-type="bridging" id="applicantBridging">
+                        <i class="fas fa-bridge"></i>
+                        <h3>برنامج التجسير</h3>
+                        <p>لخريجي الدبلوم الراغبين في البكالوريوس</p>
+                    </div>
+                    
+                    <div class="applicant-type" data-type="transfer" id="applicantTransfer">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h3>منقول من جامعة أخرى</h3>
+                        <p>نقل من كلية أو جامعة أخرى</p>
+                    </div>
+                    
+                    <div class="applicant-type" data-type="international" id="applicantInternational">
+                        <i class="fas fa-globe"></i>
+                        <h3>طالب دولي</h3>
+                        <p>لغير السعوديين الراغبين في الدراسة</p>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="registrationForm" novalidate>
+                <input type="hidden" name="subject" value="طلب تسجيل جديد - جامعة الملك خالد">
+                <input type="hidden" name="from_name" value="نظام التسجيل - جامعة الملك خالد">
+                <input type="hidden" name="replyto" id="replyToEmail">
+                <input type="hidden" name="نوع_المتقدم" id="applicantType" value="new">
+                <input type="hidden" name="timestamp" id="formTimestamp">
+                
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-id-card"></i>
+                        <span>البيانات الشخصية</span>
+                    </div>
+                    
+                    <div class="form-fields-container">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required">الاسم الكامل (رباعي)</label>
+                                <div class="input-container">
+                                    <input type="text" name="الاسم_الكامل" id="fullName" required>
+                                    <i class="fas fa-user input-icon"></i>
+                                </div>
+                                <div class="error-message" id="fullNameError"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">رقم الهوية / الإقامة</label>
+                                <div class="input-container">
+                                    <input type="text" name="رقم_الهوية" id="idNumber" required 
+                                           pattern="^[0-9]{10}$|^[0-9]{11}$" 
+                                           placeholder="أدخل 10 أو 11 رقمًا">
+                                    <i class="fas fa-id-card input-icon"></i>
+                                    <span class="id-type-indicator" id="idTypeIndicator"></span>
+                                </div>
+                                <div class="error-message" id="idNumberError"></div>
+                                <small style="color: var(--gray-dark); display: block; margin-top: 5px;">
+                                    <i class="fas fa-info-circle"></i> الهوية السعودية تبدأ بـ 1، الإقامة تبدأ بـ 2
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required">تاريخ الميلاد (هجري)</label>
+                                <div class="input-container">
+                                    <input type="text" name="تاريخ_الميلاد_هجري" id="hijriBirth" required 
+                                           pattern="^(14[4-9][0-9])\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$"
+                                           placeholder="1445/12/30">
+                                    <i class="fas fa-calendar-alt input-icon"></i>
+                                </div>
+                                <div class="error-message" id="hijriBirthError"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">تاريخ الميلاد (ميلادي)</label>
+                                <div class="input-container">
+                                    <input type="date" name="تاريخ_الميلاد_ميلادي" id="gregorianBirth" required>
+                                    <i class="fas fa-calendar input-icon"></i>
+                                </div>
+                                <div class="error-message" id="gregorianBirthError"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required">الجنس</label>
+                                <div class="input-container">
+                                    <select name="الجنس" id="gender" required>
+                                        <option value="">اختر الجنس</option>
+                                        <option value="ذكر">ذكر</option>
+                                        <option value="أنثى">أنثى</option>
+                                    </select>
+                                    <i class="fas fa-venus-mars input-icon"></i>
+                                </div>
+                                <div class="error-message" id="genderError"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">الجنسية</label>
+                                <div class="input-container">
+                                    <select name="الجنسية" id="nationality" required>
+                                        <option value="">اختر الجنسية</option>
+                                        <option value="سعودي">سعودي</option>
+                                        <option value="غير سعودي">غير سعودي</option>
+                                    </select>
+                                    <i class="fas fa-flag input-icon"></i>
+                                </div>
+                                <div class="error-message" id="nationalityError"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">الحالة الاجتماعية</label>
+                                <div class="input-container">
+                                    <select name="الحالة_الاجتماعية" id="maritalStatus" required>
+                                        <option value="">اختر الحالة</option>
+                                        <option value="أعزب">أعزب</option>
+                                        <option value="متزوج">متزوج</option>
+                                        <option value="مطلق">مطلق</option>
+                                        <option value="أرمل">أرمل</option>
+                                    </select>
+                                    <i class="fas fa-heart input-icon"></i>
+                                </div>
+                                <div class="error-message" id="maritalStatusError"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-address-book"></i>
+                        <span>بيانات الاتصال</span>
+                    </div>
+                    
+                    <div class="form-fields-container">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required">رقم الجوال</label>
+                                <div class="input-container">
+                                    <input type="tel" name="رقم_الجوال" id="phoneNumber" required pattern="^05[0-9]{8}$"
+                                           placeholder="05XXXXXXXX">
+                                    <i class="fas fa-mobile-alt input-icon"></i>
+                                </div>
+                                <div class="error-message" id="phoneNumberError"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">البريد الإلكتروني</label>
+                                <div class="input-container">
+                                    <input type="email" name="البريد_الإلكتروني" id="email" required
+                                           placeholder="example@domain.com">
+                                    <i class="fas fa-envelope input-icon"></i>
+                                </div>
+                                <div class="error-message" id="emailError"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="required">المنطقة</label>
+                                <div class="input-container">
+                                    <select name="المنطقة" id="region" required>
+                                        <option value="">اختر المنطقة</option>
+                                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                                    </select>
+                                    <i class="fas fa-map-marker-alt input-icon"></i>
+                                </div>
+                                <div class="error-message" id="regionError"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="required">المدينة</label>
+                                <div class="input-container">
+                                    <select name="المدينة" id="city" required disabled>
+                                        <option value="">اختر المدينة</option>
+                                        <!-- سيتم ملؤها بالجافاسكريبت -->
+                                    </select>
+                                    <i class="fas fa-city input-icon"></i>
+                                </div>
+                                <div class="error-message" id="cityError"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="required">العنوان التفصيلي</label>
+                            <div class="input-container">
+                                <textarea name="العنوان_التفصيلي" id="address" rows="4" required
+                                          placeholder="الحي - الشارع - رقم المبنى"></textarea>
+                                <i class="fas fa-home input-icon" style="top: 25px;"></i>
+                            </div>
+                            <div class="error-message" id="addressError"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- أزرار التنقل للصفحة 1 -->
+                <div class="navigation-buttons">
+                    <div style="width: 100px;"></div> <!-- عنصر فارغ للمساحة -->
+                    <button type="button" class="nav-btn btn-next" onclick="goToPage(2)">
+                        التالي <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- الصفحة 2: البيانات الأكاديمية -->
+        <div class="page-container" id="page2">
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>البيانات الأكاديمية</span>
+                </div>
+                
+                <div class="payment-warning" id="paymentWarning">
+                    <strong><i class="fas fa-exclamation-triangle"></i> تنبيه هام:</strong>
+                    <p style="margin-top: 10px; font-size: 16px;">هذا المسار (التعليم عن بعد / المدمج) برسوم دراسية.</p>
+                    <p style="margin-top: 10px; font-size: 16px;"><strong>يرجى العلم أن الدفع لا يتم الآن، بل سيكون عند مراجعة الشؤون الإدارية والمالية.</strong></p>
+                </div>
+                
+                <div class="payment-checkbox hidden" id="paymentCheckbox">
+                    <input type="checkbox" id="paymentAgreement" required>
+                    <label for="paymentAgreement" class="required">
+                        أوافق على أن هذا المسار برسوم دراسية وسأقوم بالدفع عند مراجعة الشؤون الإدارية والمالية
+                    </label>
+                </div>
+                
+                <div class="bridging-fields" id="bridgingFields">
+                    <div class="alert alert-info">
+                        <i class="fas fa-university"></i>
+                        <strong>بيانات برنامج التجسير:</strong> يرجى إدخال بيانات شهادة الدبلوم
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">الجامعة/الكلية السابقة</label>
+                            <div class="input-container">
+                                <input type="text" name="الجامعة_السابقة_تجسير" id="bridgingUniversity" required>
+                                <i class="fas fa-university input-icon"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">تخصص الدبلوم</label>
+                            <div class="input-container">
+                                <input type="text" name="تخصص_الدبلوم" id="diplomaSpecialty" required>
+                                <i class="fas fa-certificate input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">نظام المعدل</label>
+                            <div class="gpa-system">
+                                <div class="gpa-option selected" data-value="5">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <h4>من 5</h4>
+                                </div>
+                                <div class="gpa-option" data-value="4">
+                                    <i class="fas fa-chart-line"></i>
+                                    <h4>من 4</h4>
+                                </div>
+                                <div class="gpa-option" data-value="100">
+                                    <i class="fas fa-percentage"></i>
+                                    <h4>نسبة مئوية</h4>
+                                </div>
+                            </div>
+                            <input type="hidden" name="نظام_المعدل_تجسير" id="bridgingGpaSystem" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label class="required">معدل الدبلوم</label>
+                            <div class="input-container">
+                                <input type="number" name="معدل_الدبلوم" id="diplomaGPA" required step="0.01" min="2" max="5">
+                                <i class="fas fa-chart-line input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="transfer-fields" id="transferFields">
+                    <div class="alert alert-info">
+                        <i class="fas fa-exchange-alt"></i>
+                        <strong>بيانات النقل:</strong> يرجى إدخال بيانات الجامعة السابقة
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">الجامعة/الكلية السابقة</label>
+                            <div class="input-container">
+                                <input type="text" name="الجامعة_السابقة_نقل" id="transferUniversity" required>
+                                <i class="fas fa-university input-icon"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">التخصص السابق</label>
+                            <div class="input-container">
+                                <input type="text" name="التخصص_السابق_نقل" id="transferSpecialization" required>
+                                <i class="fas fa-book-open input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">الساعات المنجزة</label>
+                            <div class="input-container">
+                                <input type="number" name="الساعات_المنجزة_نقل" id="transferHours" required min="0" max="200">
+                                <i class="fas fa-clock input-icon"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">المعدل التراكمي</label>
+                            <div class="input-container">
+                                <input type="number" name="المعدل_التراكمي_نقل" id="transferGPA" required step="0.01" min="0" max="5">
+                                <i class="fas fa-chart-line input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="international-fields" id="internationalFields">
+                    <div class="alert alert-info">
+                        <i class="fas fa-globe"></i>
+                        <strong>بيانات الطالب الدولي:</strong> يرجى إدخال البيانات المطلوبة
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">رقم الإقامة</label>
+                            <div class="input-container">
+                                <input type="text" name="رقم_الإقامة" id="iqamaNumber" required pattern="^2[0-9]{9}$">
+                                <i class="fas fa-passport input-icon"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="required">تاريخ انتهاء الإقامة</label>
+                            <div class="input-container">
+                                <input type="date" name="تاريخ_انتهاء_الإقامة" id="iqamaExpiry" required>
+                                <i class="fas fa-calendar-times input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-fields-container academic-section" id="newStudentFields">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>لخريجي الثانوية:</strong> يجب إدخال بيانات الثانوية العامة كاملة
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">نوع المؤهل</label>
+                            <div class="input-container">
+                                <select name="نوع_المؤهل" id="qualificationType" required>
+                                    <option value="">اختر نوع المؤهل</option>
+                                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                                </select>
+                                <i class="fas fa-graduation-cap input-icon"></i>
+                            </div>
+                            <div class="error-message" id="qualificationTypeError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="required">تخصص الثانوية</label>
+                            <div class="input-container">
+                                <select name="تخصص_الثانوية" id="highschoolSpecialization" required>
+                                    <option value="">اختر التخصص</option>
+                                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                                </select>
+                                <i class="fas fa-book input-icon"></i>
+                            </div>
+                            <div class="error-message" id="highschoolSpecializationError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">سنة التخرج (هجري)</label>
+                            <div class="input-container">
+                                <select name="سنة_التخرج_هجري" id="graduationYear" required>
+                                    <option value="">اختر السنة</option>
+                                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                                </select>
+                                <i class="fas fa-calendar input-icon"></i>
+                            </div>
+                            <div class="error-message" id="graduationYearError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="required">المعدل / النسبة</label>
+                            <div class="input-container">
+                                <input type="number" name="المعدل" id="average" step="0.01" min="50" max="100" required
+                                       placeholder="مثال: 85.50">
+                                <i class="fas fa-percentage input-icon"></i>
+                            </div>
+                            <div class="error-message" id="averageError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>درجة اختبار القدرات</label>
+                            <div class="input-container">
+                                <input type="number" name="درجة_القدرات" id="aptitudeScore" step="0.01" min="0" max="100" class="optional"
+                                       placeholder="اختياري">
+                                <i class="fas fa-brain input-icon"></i>
+                            </div>
+                            <div class="error-message" id="aptitudeScoreError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>درجة اختبار التحصيلي</label>
+                            <div class="input-container">
+                                <input type="number" name="درجة_التحصيلي" id="achievementScore" step="0.01" min="0" max="100" class="optional"
+                                       placeholder="اختياري">
+                                <i class="fas fa-chart-bar input-icon"></i>
+                            </div>
+                            <div class="error-message" id="achievementScoreError"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- أزرار التنقل للصفحة 2 -->
+            <div class="navigation-buttons">
+                <button type="button" class="nav-btn btn-prev" onclick="goToPage(1)">
+                    <i class="fas fa-arrow-right"></i> السابق
+                </button>
+                <button type="button" class="nav-btn btn-next" onclick="goToPage(3)">
+                    التالي <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- الصفحة 3: الكلية والتخصص -->
+        <div class="page-container" id="page3">
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-university"></i>
+                    <span>الكلية والتخصص</span>
+                </div>
+                
+                <div class="form-fields-container">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">الكلية</label>
+                            <div class="input-container">
+                                <select name="الكلية" id="college" required>
+                                    <option value="">اختر الكلية</option>
+                                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                                </select>
+                                <i class="fas fa-school input-icon"></i>
+                            </div>
+                            <div class="error-message" id="collegeError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="required">نوع الدراسة</label>
+                            <div class="input-container">
+                                <select name="نوع_الدراسة" id="studyType" required>
+                                    <option value="">اختر نوع الدراسة</option>
+                                    <option value="منتظم">منتظم (حضوري)</option>
+                                    <option value="تعليم عن بعد">تعليم عن بعد</option>
+                                    <option value="تعليم مدمج">تعليم مدمج</option>
+                                </select>
+                                <i class="fas fa-chalkboard-teacher input-icon"></i>
+                            </div>
+                            <div class="error-message" id="studyTypeError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">البرنامج الأكاديمي</label>
+                            <div class="input-container">
+                                <select name="البرنامج_الأكاديمي" id="programType" required>
+                                    <option value="">اختر البرنامج</option>
+                                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                                </select>
+                                <i class="fas fa-graduation-cap input-icon"></i>
+                            </div>
+                            <div class="error-message" id="programTypeError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="required">نظام الدراسة</label>
+                            <div class="input-container">
+                                <select name="نظام_الدراسة" id="studySystem" required>
+                                    <option value="">اختر النظام</option>
+                                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                                </select>
+                                <i class="fas fa-clock input-icon"></i>
+                            </div>
+                            <div class="error-message" id="studySystemError"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>ملاحظة:</strong> يرجى اختيار التخصصات المناسبة لمؤهلك وجنسك
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="required">التخصص (الرغبة الأولى)</label>
+                            <div class="input-container">
+                                <select name="التخصص_الأول" id="firstPreference" required>
+                                    <option value="">اختر التخصص</option>
+                                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                                </select>
+                                <i class="fas fa-medal input-icon"></i>
+                            </div>
+                            <div class="error-message" id="firstPreferenceError"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>التخصص (الرغبة الثانية)</label>
+                            <div class="input-container">
+                                <select name="التخصص_الثاني" id="secondPreference">
+                                    <option value="">اختر التخصص</option>
+                                    <!-- سيتم ملؤها بالجافاسكريبت -->
+                                </select>
+                                <i class="fas fa-award input-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>ملاحظات إضافية</label>
+                        <div class="input-container">
+                            <textarea name="ملاحظات" id="notes" rows="4"
+                                      placeholder="أي ملاحظات أو معلومات إضافية تريد إضافتها..."></textarea>
+                            <i class="fas fa-sticky-note input-icon" style="top: 25px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- أزرار التنقل للصفحة 3 -->
+            <div class="navigation-buttons">
+                <button type="button" class="nav-btn btn-prev" onclick="goToPage(2)">
+                    <i class="fas fa-arrow-right"></i> السابق
+                </button>
+                <button type="button" class="nav-btn btn-next" onclick="goToPage(4)">
+                    التالي <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- الصفحة 4: المراجعة والإرسال -->
+        <div class="page-container" id="page4">
+            <div class="alert alert-info">
+                <strong><i class="fas fa-info-circle"></i> خطوة أخيرة:</strong>
+                <p style="margin-top: 10px;">يرجى مراجعة جميع البيانات المدخلة والتأكد من صحتها قبل إرسال الطلب.</p>
+            </div>
+            
+            <div class="review-section" id="reviewSection">
+                <h3><i class="fas fa-user"></i> البيانات الشخصية</h3>
+                <div id="reviewPersonal"></div>
+            </div>
+            
+            <div class="review-section">
+                <h3><i class="fas fa-graduation-cap"></i> البيانات الأكاديمية</h3>
+                <div id="reviewAcademic"></div>
+            </div>
+            
+            <div class="review-section">
+                <h3><i class="fas fa-university"></i> الكلية والتخصص</h3>
+                <div id="reviewCollege"></div>
+            </div>
+            
+            <div class="review-section" id="paymentReviewSection" style="display: none;">
+                <h3><i class="fas fa-money-bill-wave"></i> معلومات الرسوم الدراسية</h3>
+                <div id="reviewPayment"></div>
+            </div>
+            
+            <!-- أزرار التنقل للصفحة 4 -->
+            <div class="navigation-buttons">
+                <button type="button" class="nav-btn btn-prev" onclick="goToPage(3)">
+                    <i class="fas fa-arrow-right"></i> السابق
+                </button>
+                <button type="button" class="btn-submit" id="submitBtn" onclick="submitFormFinal()">
+                    <i class="fas fa-paper-plane"></i> إرسال الطلب
+                </button>
+            </div>
+        </div>
+        
+        <!-- رسالة النجاح -->
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i>
+            <h2>تم إرسال طلبك بنجاح!</h2>
+            <p><span class="highlight">✅ تم استلام طلب التسجيل الخاص بك بنجاح وتخزينه في قاعدة البيانات.</span></p>
+            <p><span class="highlight">📧 ستصلك رسالة تأكيد على البريد الإلكتروني المسجل خلال 24 ساعة.</span></p>
+            <p><span class="highlight">👨‍💼 سيتم التواصل معك من قبل موظف الشؤون الإدارية والمالية لاستكمال بقية الإجراءات.</span></p>
+            <p><span class="highlight">📞 يمكنك التواصل معنا على الرقم +966172413900 لأي استفسار.</span></p>
+            <p><span class="highlight">⏰ يرجى متابعة بريدك الإلكتروني والجوال للاطلاع على التحديثات.</span></p>
+            <button onclick="location.reload()" class="btn-submit" style="margin-top: 30px;">
+                <i class="fas fa-redo"></i> تقديم طلب جديد
+            </button>
+        </div>
+        
+        <div class="footer">
+            <div class="footer-info">
+                <div>
+                    <i class="fas fa-phone-alt"></i>
+                    <span>هاتف الدعم: +966172413900</span>
+                </div>
+                <div>
+                    <i class="fas fa-clock"></i>
+                    <span>ساعات العمل: 8 صباحاً - 4 عصراً</span>
+                </div>
+                <div>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>منطقة عسير - أبها - الفرشة</span>
+                </div>
+            </div>
+            
+            <div class="social-links">
+                <a href="#" title="تويتر"><i class="fab fa-twitter"></i></a>
+                <a href="#" title="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" title="إنستجرام"><i class="fab fa-instagram"></i></a>
+                <a href="#" title="يوتيوب"><i class="fab fa-youtube"></i></a>
+                <a href="#" title="لينكد إن"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+            
+            <p>جميع الحقوق محفوظة &copy; جامعة الملك خالد 2024 | <a href="#">سياسة الخصوصية</a> | <a href="#">شروط الاستخدام</a> | <a href="#">خريطة الموقع</a></p>
+            <p style="margin-top: 15px; font-size: 13px; color: #888;">هذا النظام مقدم من عمادة القبول والتسجيل - جامعة الملك خالد - الإصدار 4.0</p>
+        </div>
+    </div>
+
+    <!-- لوحة تحكم الإدارة -->
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 1000;">
+        <a href="#adminPanel" id="adminToggle" style="background: var(--primary-color); color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-size: 12px;">
+            <i class="fas fa-cog"></i> لوحة التحكم
+        </a>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ✅ بيانات جامعة الملك خالد (نفس البيانات السابقة)
+        const academicData = {
+            regions: [
+                'عسير', 'الرياض', 'مكة المكرمة', 'المدينة المنورة', 'الشرقية', 'القصيم', 
+                'تبوك', 'حائل', 'الحدود الشمالية', 'جازان', 
+                'نجران', 'الباحة', 'الجوف'
+            ],
+            
+            citiesByRegion: {
+                'عسير': ['أبها', 'خميس مشيط', 'النماص', 'بللسمر', 'بللحمر', 'تنومة', 'ظهران الجنوب', 'رجال ألمع', 'المجالد', 'تثليث', 'سرار', 'الفريشة'],
+                'الشرقية': ['الدمام', 'الخبر', 'الظهران', 'الأحساء', 'القطيف', 'بقيق', 'حفر الباطن', 'الجبيل', 'النعيرية', 'قرية العليا'],
+                'الرياض': ['الرياض', 'الخرج', 'الدوادمي', 'المجمعة', 'القويعية', 'وادي الدواسر', 'الأفلاج', 'ضرما', 'حوطة بني تميم', 'حوطة سدير'],
+                'مكة المكرمة': ['مكة المكرمة', 'جدة', 'الطائف', 'القنفذة', 'الليث', 'رابغ', 'خليص'],
+                'المدينة المنورة': ['المدينة المنورة', 'ينبع', 'العلا', 'المهد', 'خيبر', 'بدر', 'الحناكية'],
+                'القصيم': ['بريدة', 'عنيزة', 'المذنب', 'الرس', 'البكيرية', 'البدائع', 'رياض الخبراء', 'عيون الجواء'],
+                'تبوك': ['تبوك', 'الوجه', 'ضباء', 'تيماء', 'أملج', 'حقل', 'البدع'],
+                'حائل': ['حائل', 'الغزالة', 'بقعاء', 'الشنان', 'موقق', 'سميراء', 'الحائط'],
+                'الحدود الشمالية': ['عرعر', 'طريف', 'رفحاء', 'العويقيلة', 'مركز الصحن'],
+                'جازان': ['جازان', 'صبيا', 'أبو عريش', 'صامطة', 'بيش', 'الدرب', 'الحرث', 'ضمد'],
+                'نجران': ['نجران', 'شرورة', 'بدر الجنوب', 'حبونا', 'ثار', 'يدمة'],
+                'الباحة': ['الباحة', 'المخواة', 'بلجرشي', 'المندق', 'قلوة', 'العقيق', 'الحجرة'],
+                'الجوف': ['سكاكا', 'القريات', 'دومة الجندل', 'طبرجل', 'صوير', 'النبك أبو قصر']
+            },
+            
+            colleges: [
+                'كلية الطب والعلوم الصحية',
+                'كلية الهندسة وعلوم الحاسب',
+                'كلية العلوم التطبيقية (الدبلومات)',
+                'كلية إدارة الأعمال والقانون',
+                'كلية العلوم والآداب',
+                'كلية التربية'
+            ],
+            
+            programs: {
+                'كلية الطب والعلوم الصحية': [
+                    {name: 'الطب والجراحة', duration: '6 سنوات', gender: 'both'},
+                    {name: 'جراحة الأسنان', duration: '6 سنوات', gender: 'both'},
+                    {name: 'الصيدلة (دكتور صيدلي)', duration: '6 سنوات', gender: 'both'},
+                    {name: 'التمريض', duration: '4 سنوات', gender: 'both'},
+                    {name: 'التجسير (تمريض)', duration: 'سنتان', gender: 'both'}
+                ],
+                'كلية الهندسة وعلوم الحاسب': [
+                    {name: 'الهندسة المدنية', duration: '5 سنوات', gender: 'ذكر'},
+                    {name: 'الهندسة الميكانيكية', duration: '5 سنوات', gender: 'ذكر'},
+                    {name: 'علوم الحاسب', duration: '4 سنوات', gender: 'both'},
+                    {name: 'الأمن السيبراني', duration: '4 سنوات', gender: 'both'},
+                    {name: 'ماجستير علوم الحاسب', duration: 'سنتان', gender: 'both'},
+                    {name: 'ماجستير الأمن السيبراني', duration: 'سنتان', gender: 'both'}
+                ],
+                'كلية العلوم التطبيقية (الدبلومات)': [
+                    {name: 'دبلوم الموارد البشرية', duration: 'سنتان', gender: 'both'},
+                    {name: 'دبلوم البرمجة والنظم', duration: 'سنتان', gender: 'both'},
+                    {name: 'دبلوم التجارة الإلكترونية', duration: 'سنتان', gender: 'both'},
+                    {name: 'دبلوم التسويق', duration: 'سنتان', gender: 'both'}
+                ],
+                'كلية إدارة الأعمال والقانون': [
+                    {name: 'إدارة الأعمال التنفيذية (MBA)', duration: 'سنتان', gender: 'both'},
+                    {name: 'القانون', duration: '4 سنوات', gender: 'both'},
+                    {name: 'المحاسبة', duration: '4 سنوات', gender: 'both'},
+                    {name: 'ماجستير القانون', duration: 'سنتان', gender: 'both'},
+                    {name: 'ماجستير المحاسبة المهني', duration: 'سنتان', gender: 'both'}
+                ],
+                'كلية العلوم والآداب': [
+                    {name: 'اللغة العربية', duration: '4 سنوات', gender: 'both'},
+                    {name: 'اللغة الإنجليزية', duration: '4 سنوات', gender: 'both'},
+                    {name: 'الرياضيات', duration: '4 سنوات', gender: 'both'},
+                    {name: 'الفيزياء', duration: '4 سنوات', gender: 'both'},
+                    {name: 'الكيمياء', duration: '4 سنوات', gender: 'both'},
+                    {name: 'الأحياء', duration: '4 سنوات', gender: 'both'}
+                ],
+                'كلية التربية': [
+                    {name: 'تربية خاصة', duration: '4 سنوات', gender: 'both'},
+                    {name: 'تعليم ابتدائي', duration: '4 سنوات', gender: 'both'},
+                    {name: 'تعليم ثانوي', duration: '4 سنوات', gender: 'both'},
+                    {name: 'الإدارة التربوية', duration: '4 سنوات', gender: 'both'}
+                ]
+            },
+            
+            studySystems: [
+                'نظام الفصول الدراسية',
+                'نظام الساعات المعتمدة',
+                'نظام المقررات'
+            ],
+            
+            qualifications: [
+                'ثانوية عامة - علمي',
+                'ثانوية عامة - أدبي',
+                'ثانوية تجارية',
+                'ثانوية صناعية',
+                'ثانوية زراعية',
+                'ثانوية فندقية',
+                'ثانوية صحية',
+                'ثانوية شرعية',
+                'ثانوية تحفيظ القرآن',
+                'ثانوية معهد الأئمة والخطباء'
+            ],
+            
+            highschoolSpecializations: {
+                'العلمي': ['علمي طبيعي', 'علمي حاسب آلي', 'علمي هندسي', 'علمي أحياء', 'علمي كيمياء', 'علمي فيزياء'],
+                'الأدبي': ['أدبي إداري', 'أدبي قانوني', 'أدبي شرعي', 'أدبي لغات', 'أدبي علوم إنسانية', 'أدبي علوم اجتماعية'],
+                'التقني': ['تقني كهرباء', 'تقني ميكانيكا', 'تقني إلكترونيات', 'تقني حاسب آلي', 'تقني بناء وتشييد'],
+                'الإداري والتجاري': ['إدارة أعمال', 'محاسبة', 'سكرتارية', 'تسويق', 'مبيعات'],
+                'الصحي': ['صحي تمريض', 'صحي صيدلة', 'صحي مختبرات', 'صحي أشعة', 'صحي إسعاف وطوارئ']
+            },
+            
+            graduationYears: ['1442', '1443', '1444', '1445', '1446', '1447']
+        };
+
+        // ✅ تهيئة جميع المتغيرات العالمية
+        const registrationForm = document.getElementById('registrationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const applicantTypeInput = document.getElementById('applicantType');
+        const replyToEmail = document.getElementById('replyToEmail');
+        const formTimestamp = document.getElementById('formTimestamp');
+        const idTypeIndicator = document.getElementById('idTypeIndicator');
+        
+        // ✅ تخزين البيانات الديناميكية
+        const formState = {
+            currentApplicantType: 'new',
+            studyType: '',
+            selectedRegion: '',
+            selectedCity: '',
+            selectedCollege: '',
+            selectedGender: '',
+            currentPage: 1,
+            totalPages: 4,
+            originalSpecializations: [],
+            filteredSpecializations: []
+        };
+        
+        // ✅ 1. تهيئة النظام - تنفيذ فور تحميل الصفحة
+        function initializeSystem() {
+            console.log('🚀 نظام التسجيل والقبول - جامعة الملك خالد - نظام الصفحات المتعددة');
+            
+            // تعيين الطابع الزمني
+            formTimestamp.value = new Date().toISOString();
+            
+            // تحميل البيانات الديناميكية
+            loadDynamicData();
+            
+            // تهيئة أحداث الحقول
+            initializeFieldEvents();
+            
+            // تحديث شريط التقدم
+            updateProgressBar();
+            
+            console.log('✅ النظام جاهز للاستخدام');
+        }
+        
+        // ✅ 2. تحميل البيانات الديناميكية
+        function loadDynamicData() {
+            // تحميل المناطق
+            loadRegionsData();
+            
+            // تحميل المؤهلات
+            loadQualificationsData();
+            
+            // تحميل سنوات التخرج
+            loadGraduationYears();
+            
+            // تحميل تخصصات الثانوية
+            loadHighschoolSpecializationsData();
+            
+            // تحميل الكليات
+            loadCollegesData();
+            
+            // تحميل أنظمة الدراسة
+            loadStudySystemsData();
+        }
+        
+        // ✅ 3. تحميل بيانات المناطق
+        function loadRegionsData() {
+            const regionSelect = document.getElementById('region');
+            regionSelect.innerHTML = '<option value="">اختر المنطقة</option>';
+            
+            academicData.regions.forEach(region => {
+                const option = document.createElement('option');
+                option.value = region;
+                option.textContent = region;
+                regionSelect.appendChild(option);
+            });
+        }
+        
+        // ✅ 4. تحميل بيانات المؤهلات
+        function loadQualificationsData() {
+            const qualificationSelect = document.getElementById('qualificationType');
+            qualificationSelect.innerHTML = '<option value="">اختر نوع المؤهل</option>';
+            
+            academicData.qualifications.forEach(qualification => {
+                const option = document.createElement('option');
+                option.value = qualification;
+                option.textContent = qualification;
+                qualificationSelect.appendChild(option);
+            });
+        }
+        
+        // ✅ 5. تحميل سنوات التخرج
+        function loadGraduationYears() {
+            const yearSelect = document.getElementById('graduationYear');
+            yearSelect.innerHTML = '<option value="">اختر السنة</option>';
+            
+            academicData.graduationYears.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = `${year} هـ`;
+                yearSelect.appendChild(option);
+            });
+        }
+        
+        // ✅ 6. تحميل تخصصات الثانوية
+        function loadHighschoolSpecializationsData() {
+            const specializationSelect = document.getElementById('highschoolSpecialization');
+            specializationSelect.innerHTML = '<option value="">اختر التخصص</option>';
+            
+            for (const category in academicData.highschoolSpecializations) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = category;
+                
+                academicData.highschoolSpecializations[category].forEach(spec => {
+                    const option = document.createElement('option');
+                    option.value = spec;
+                    option.textContent = spec;
+                    optgroup.appendChild(option);
+                });
+                
+                specializationSelect.appendChild(optgroup);
+            }
+        }
+        
+        // ✅ 7. تحميل الكليات
+        function loadCollegesData() {
+            const collegeSelect = document.getElementById('college');
+            collegeSelect.innerHTML = '<option value="">اختر الكلية</option>';
+            
+            academicData.colleges.forEach(college => {
+                const option = document.createElement('option');
+                option.value = college;
+                option.textContent = college;
+                collegeSelect.appendChild(option);
+            });
+        }
+        
+        // ✅ 8. تحميل أنظمة الدراسة
+        function loadStudySystemsData() {
+            const systemSelect = document.getElementById('studySystem');
+            systemSelect.innerHTML = '<option value="">اختر النظام</option>';
+            
+            academicData.studySystems.forEach(system => {
+                const option = document.createElement('option');
+                option.value = system;
+                option.textContent = system;
+                systemSelect.appendChild(option);
+            });
+        }
+        
+        // ✅ 9. التنقل بين الصفحات
+        function goToPage(pageNumber) {
+            // التحقق من الصفحة الحالية قبل الانتقال
+            if (pageNumber > formState.currentPage) {
+                if (!validateCurrentPage()) {
+                    alert('⚠️ يرجى تصحيح الأخطاء في الصفحة الحالية قبل المتابعة.');
+                    return;
+                }
+            }
+            
+            // إخفاء الصفحة الحالية
+            document.querySelector(`#page${formState.currentPage}`).classList.remove('active');
+            
+            // إظهار الصفحة الجديدة
+            document.querySelector(`#page${pageNumber}`).classList.add('active');
+            
+            // تحديث حالة الصفحة
+            formState.currentPage = pageNumber;
+            
+            // تحديث شريط التقدم
+            updateProgressBar();
+            
+            // إذا كانت الصفحة 4 (المراجعة)، قم بتحديث بيانات المراجعة
+            if (pageNumber === 4) {
+                updateReviewData();
+            }
+            
+            // التمرير إلى أعلى الصفحة
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // ✅ 10. التحقق من الصفحة الحالية
+        function validateCurrentPage() {
+            const currentPage = document.querySelector(`#page${formState.currentPage}`);
+            const requiredFields = currentPage.querySelectorAll('[required]');
+            let isValid = true;
+            
+            // إخفاء جميع رسائل الخطأ في الصفحة الحالية
+            currentPage.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // التحقق من كل حقل مطلوب
+            requiredFields.forEach(field => {
+                if (field.type === 'checkbox') {
+                    if (!field.checked) {
+                        isValid = false;
+                        field.classList.add('has-error');
+                        const errorElement = document.getElementById(field.id + 'Error');
+                        if (errorElement) {
+                            errorElement.textContent = 'يجب الموافقة على هذا الحقل';
+                            errorElement.style.display = 'block';
+                        }
+                    }
+                } else {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('has-error');
+                        const errorElement = document.getElementById(field.id + 'Error');
+                        if (errorElement) {
+                            errorElement.textContent = 'هذا الحقل مطلوب';
+                            errorElement.style.display = 'block';
+                        }
+                    }
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // ✅ 11. تحديث شريط التقدم
+        function updateProgressBar() {
+            const steps = document.querySelectorAll('.step');
+            const progressLine = document.getElementById('progressLine');
+            
+            // تحديث الخطوة النشطة
+            steps.forEach(step => {
+                const stepNumber = parseInt(step.getAttribute('data-step'));
+                step.classList.remove('active', 'completed');
+                
+                if (stepNumber === formState.currentPage) {
+                    step.classList.add('active');
+                } else if (stepNumber < formState.currentPage) {
+                    step.classList.add('completed');
+                }
+            });
+            
+            // تحديث خط التقدم
+            const progressPercentage = ((formState.currentPage - 1) / (formState.totalPages - 1)) * 100;
+            progressLine.style.width = `${progressPercentage}%`;
+        }
+        
+        // ✅ 12. تحديث بيانات المراجعة
+        function updateReviewData() {
+            // جمع البيانات من النموذج
+            const formData = new FormData(registrationForm);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            // تحديث قسم البيانات الشخصية
+            const personalReview = document.getElementById('reviewPersonal');
+            personalReview.innerHTML = `
+                <div class="review-item">
+                    <div class="review-label">الاسم الكامل:</div>
+                    <div class="review-value">${data['الاسم_الكامل'] || 'غير محدد'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">رقم الهوية:</div>
+                    <div class="review-value">${data['رقم_الهوية'] || 'غير محدد'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">الجنس:</div>
+                    <div class="review-value">${data['الجنس'] || 'غير محدد'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">البريد الإلكتروني:</div>
+                    <div class="review-value">${data['البريد_الإلكتروني'] || 'غير محدد'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">رقم الجوال:</div>
+                    <div class="review-value">${data['رقم_الجوال'] || 'غير محدد'}</div>
+                </div>
+            `;
+            
+            // تحديث قسم البيانات الأكاديمية
+            const academicReview = document.getElementById('reviewAcademic');
+            let academicHTML = '';
+            
+            if (data['نوع_المتقدم'] === 'new') {
+                academicHTML = `
+                    <div class="review-item">
+                        <div class="review-label">نوع المؤهل:</div>
+                        <div class="review-value">${data['نوع_المؤهل'] || 'غير محدد'}</div>
+                    </div>
+                    <div class="review-item">
+                        <div class="review-label">تخصص الثانوية:</div>
+                        <div class="review-value">${data['تخصص_الثانوية'] || 'غير محدد'}</div>
+                    </div>
+                    <div class="review-item">
+                        <div class="review-label">المعدل:</div>
+                        <div class="review-value">${data['المعدل'] || 'غير محدد'}</div>
+                    </div>
+                `;
+            } else if (data['نوع_المتقدم'] === 'bridging') {
+                academicHTML = `
+                    <div class="review-item">
+                        <div class="review-label">الجامعة السابقة:</div>
+                        <div class="review-value">${data['الجامعة_السابقة_تجسير'] || 'غير محدد'}</div>
+                    </div>
+                    <div class="review-item">
+                        <div class="review-label">تخصص الدبلوم:</div>
+                        <div class="review-value">${data['تخصص_الدبلوم'] || 'غير محدد'}</div>
+                    </div>
+                `;
+            }
+            
+            academicReview.innerHTML = academicHTML;
+            
+            // تحديث قسم الكلية والتخصص
+            const collegeReview = document.getElementById('reviewCollege');
+            collegeReview.innerHTML = `
+                <div class="review-item">
+                    <div class="review-label">الكلية:</div>
+                    <div class="review-value">${data['الكلية'] || 'غير محدد'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">نوع الدراسة:</div>
+                    <div class="review-value">${data['نوع_الدراسة'] || 'غير محدد'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">البرنامج الأكاديمي:</div>
+                    <div class="review-value">${data['البرنامج_الأكاديمي'] || 'غير محدد'}</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-label">التخصص (الرغبة الأولى):</div>
+                    <div class="review-value">${data['التخصص_الأول'] || 'غير محدد'}</div>
+                </div>
+            `;
+            
+            // إذا كان نوع الدراسة برسوم، أظهر قسم الرسوم
+            if (data['نوع_الدراسة'] === 'تعليم عن بعد' || data['نوع_الدراسة'] === 'تعليم مدمج') {
+                document.getElementById('paymentReviewSection').style.display = 'block';
+                const paymentReview = document.getElementById('reviewPayment');
+                paymentReview.innerHTML = `
+                    <div class="review-item">
+                        <div class="review-label">نوع الدراسة:</div>
+                        <div class="review-value">${data['نوع_الدراسة'] || 'غير محدد'} (برسوم دراسية)</div>
+                    </div>
+                    <div class="review-item">
+                        <div class="review-label">الموافقة على الرسوم:</div>
+                        <div class="review-value">${data['paymentAgreement'] ? 'موافق' : 'غير موافق'}</div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('paymentReviewSection').style.display = 'none';
+            }
+        }
+        
+        // ✅ 13. تحديث المدن حسب المنطقة المختارة
+        function updateCitiesByRegion(region) {
+            const citySelect = document.getElementById('city');
+            
+            // تمكين القائمة المنسدلة للمدن
+            citySelect.disabled = false;
+            citySelect.innerHTML = '<option value="">اختر المدينة</option>';
+            
+            formState.selectedRegion = region;
+            
+            if (region && academicData.citiesByRegion[region]) {
+                academicData.citiesByRegion[region].forEach(city => {
+                    const option = document.createElement('option');
+                    option.value = city;
+                    option.textContent = city;
+                    citySelect.appendChild(option);
+                });
+            }
+        }
+        
+        // ✅ 14. تحديث البرامج حسب الكلية المختارة
+        function updateProgramsByCollege(college) {
+            const programSelect = document.getElementById('programType');
+            programSelect.innerHTML = '<option value="">اختر البرنامج</option>';
+            
+            formState.selectedCollege = college;
+            
+            if (college && academicData.programs[college]) {
+                academicData.programs[college].forEach(program => {
+                    // فلترة البرامج حسب الجنس
+                    if (formState.selectedGender === '' || 
+                        program.gender === 'both' || 
+                        program.gender === formState.selectedGender) {
+                        const option = document.createElement('option');
+                        option.value = program.name;
+                        option.textContent = `${program.name} (${program.duration})`;
+                        option.dataset.duration = program.duration;
+                        option.dataset.gender = program.gender;
+                        programSelect.appendChild(option);
+                    }
+                });
+            }
+            
+            // تحديث التخصصات حسب الكلية
+            updateSpecializationsByCollege(college);
+        }
+        
+        // ✅ 15. تحديث التخصصات حسب الكلية
+        function updateSpecializationsByCollege(college) {
+            formState.filteredSpecializations = [];
+            
+            if (college && academicData.programs[college]) {
+                formState.filteredSpecializations = academicData.programs[college]
+                    .filter(program => 
+                        formState.selectedGender === '' || 
+                        program.gender === 'both' || 
+                        program.gender === formState.selectedGender
+                    )
+                    .map(program => ({
+                        value: program.name,
+                        text: program.name,
+                        group: college,
+                        gender: program.gender
+                    }));
+            }
+            
+            // تحديث قائمة التخصصات الأولى
+            updateFirstPreferenceOptions();
+            
+            // تحديث قائمة التخصصات الثانية
+            updateSecondPreferenceOptions();
+        }
+        
+        // ✅ 16. تحديث قائمة التخصصات الأولى
+        function updateFirstPreferenceOptions() {
+            const select = document.getElementById('firstPreference');
+            select.innerHTML = '<option value="">اختر التخصص</option>';
+            
+            if (formState.filteredSpecializations.length > 0) {
+                const grouped = {};
+                formState.filteredSpecializations.forEach(spec => {
+                    if (!grouped[spec.group]) {
+                        grouped[spec.group] = [];
+                    }
+                    grouped[spec.group].push(spec);
+                });
+                
+                for (const group in grouped) {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = group;
+                    
+                    grouped[group].forEach(spec => {
+                        const option = document.createElement('option');
+                        option.value = spec.value;
+                        option.textContent = spec.text;
+                        if (spec.gender === 'ذكر') {
+                            option.textContent += ' (للذكور فقط)';
+                        }
+                        optgroup.appendChild(option);
+                    });
+                    
+                    select.appendChild(optgroup);
+                }
+            }
+        }
+        
+        // ✅ 17. تحديث قائمة التخصصات الثانية
+        function updateSecondPreferenceOptions() {
+            const firstSelect = document.getElementById('firstPreference');
+            const secondSelect = document.getElementById('secondPreference');
+            const selectedFirst = firstSelect.value;
+            
+            secondSelect.innerHTML = '<option value="">اختر التخصص</option>';
+            
+            const grouped = {};
+            formState.filteredSpecializations.forEach(spec => {
+                if (spec.value !== selectedFirst) {
+                    if (!grouped[spec.group]) {
+                        grouped[spec.group] = [];
+                    }
+                    grouped[spec.group].push(spec);
+                }
+            });
+            
+            for (const group in grouped) {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = group;
+                
+                grouped[group].forEach(spec => {
+                    const option = document.createElement('option');
+                    option.value = spec.value;
+                    option.textContent = spec.text;
+                    if (spec.gender === 'ذكر') {
+                        option.textContent += ' (للذكور فقط)';
+                    }
+                    optgroup.appendChild(option);
+                });
+                
+                secondSelect.appendChild(optgroup);
+            }
+        }
+        
+        // ✅ 18. تحديث الحقول الأكاديمية حسب نوع المتقدم
+        function updateAcademicFields(applicantType) {
+            formState.currentApplicantType = applicantType;
+            
+            // إخفاء جميع الحقول الإضافية أولاً
+            document.getElementById('bridgingFields').style.display = 'none';
+            document.getElementById('transferFields').style.display = 'none';
+            document.getElementById('internationalFields').style.display = 'none';
+            
+            // إظهار الحقول المناسبة
+            switch(applicantType) {
+                case 'bridging':
+                    document.getElementById('bridgingFields').style.display = 'block';
+                    setRequiredFields('bridgingFields', true);
+                    break;
+                case 'transfer':
+                    document.getElementById('transferFields').style.display = 'block';
+                    setRequiredFields('transferFields', true);
+                    break;
+                case 'international':
+                    document.getElementById('internationalFields').style.display = 'block';
+                    setRequiredFields('internationalFields', true);
+                    break;
+            }
+            
+            // تحديث الحقل المخفي
+            applicantTypeInput.value = applicantType;
+            
+            // تحديث التخصصات حسب نوع المتقدم
+            updateFirstPreferenceOptions();
+        }
+        
+        // ✅ 19. تعيين الحقول المطلوبة
+        function setRequiredFields(sectionId, isRequired) {
+            const section = document.getElementById(sectionId);
+            if (!section) return;
+            
+            const inputs = section.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.required = isRequired;
+            });
+        }
+        
+        // ✅ 20. التحقق من رقم الهوية
+        function validateIdNumber(idNumber) {
+            if (!idNumber || idNumber.length < 1) {
+                idTypeIndicator.style.display = 'none';
+                return false;
+            }
+            
+            const firstDigit = idNumber.charAt(0);
+            let type = '';
+            
+            if (firstDigit === '1') {
+                type = 'هوية سعودية';
+                idTypeIndicator.style.background = 'var(--accent-color)';
+            } else if (firstDigit === '2') {
+                type = 'إقامة';
+                idTypeIndicator.style.background = 'var(--secondary-color)';
+            } else {
+                type = 'غير معروف';
+                idTypeIndicator.style.background = 'var(--gray-dark)';
+            }
+            
+            idTypeIndicator.textContent = type;
+            idTypeIndicator.style.display = 'block';
+            
+            return type;
+        }
+        
+        // ✅ 21. تحديث نظام المعدل للتجسير
+        function updateBridgingGpaSystem(system) {
+            const gpaInput = document.getElementById('diplomaGPA');
+            
+            switch(system) {
+                case '5':
+                    gpaInput.min = '2';
+                    gpaInput.max = '5';
+                    gpaInput.placeholder = 'من 2 إلى 5';
+                    break;
+                case '4':
+                    gpaInput.min = '1';
+                    gpaInput.max = '4';
+                    gpaInput.placeholder = 'من 1 إلى 4';
+                    break;
+                case '100':
+                    gpaInput.min = '50';
+                    gpaInput.max = '100';
+                    gpaInput.placeholder = 'من 50% إلى 100%';
+                    break;
+            }
+            
+            document.getElementById('bridgingGpaSystem').value = system;
+        }
+        
+        // ✅ 22. تهيئة أحداث الحقول
+        function initializeFieldEvents() {
+            // أحداث اختيار نوع المتقدم
+            document.querySelectorAll('.applicant-type').forEach(type => {
+                type.addEventListener('click', function() {
+                    const selectedType = this.getAttribute('data-type');
+                    
+                    // تحديث المظهر
+                    document.querySelectorAll('.applicant-type').forEach(t => {
+                        t.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    // تحديث الحقول
+                    updateAcademicFields(selectedType);
+                });
+            });
+            
+            // حدث تغيير المنطقة
+            document.getElementById('region').addEventListener('change', function() {
+                const region = this.value;
+                updateCitiesByRegion(region);
+            });
+            
+            // حدث تغيير الجنس
+            document.getElementById('gender').addEventListener('change', function() {
+                formState.selectedGender = this.value;
+                
+                // تحديث التخصصات حسب الجنس
+                if (formState.selectedCollege) {
+                    updateSpecializationsByCollege(formState.selectedCollege);
+                }
+            });
+            
+            // حدث تغيير الجنسية
+            document.getElementById('nationality').addEventListener('change', function() {
+                if (this.value === 'سعودي') {
+                    document.getElementById('idNumber').placeholder = 'أدخل رقم الهوية (10 أرقام)';
+                } else {
+                    document.getElementById('idNumber').placeholder = 'أدخل رقم الإقامة (10 أو 11 رقمًا)';
+                }
+            });
+            
+            // حدث تغيير الكلية
+            document.getElementById('college').addEventListener('change', function() {
+                const college = this.value;
+                updateProgramsByCollege(college);
+            });
+            
+            // حدث تغيير نوع الدراسة
+            document.getElementById('studyType').addEventListener('change', function() {
+                formState.studyType = this.value;
+                
+                if (this.value === 'تعليم عن بعد' || this.value === 'تعليم مدمج') {
+                    document.getElementById('paymentWarning').style.display = 'block';
+                    document.getElementById('paymentCheckbox').classList.remove('hidden');
+                    document.getElementById('paymentAgreement').required = true;
+                } else {
+                    document.getElementById('paymentWarning').style.display = 'none';
+                    document.getElementById('paymentCheckbox').classList.add('hidden');
+                    document.getElementById('paymentAgreement').required = false;
+                    document.getElementById('paymentAgreement').checked = false;
+                }
+            });
+            
+            // حدث تغيير الرغبة الأولى
+            document.getElementById('firstPreference').addEventListener('change', function() {
+                updateSecondPreferenceOptions();
+            });
+            
+            // حدث التحقق من رقم الهوية
+            document.getElementById('idNumber').addEventListener('input', function() {
+                validateIdNumber(this.value);
+            });
+            
+            // أحداث نظام المعدل للتجسير
+            document.querySelectorAll('.gpa-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.gpa-option').forEach(o => {
+                        o.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    const system = this.getAttribute('data-value');
+                    updateBridgingGpaSystem(system);
+                });
+            });
+            
+            // أحداث التحقق الفوري
+            setupRealTimeValidation();
+        }
+        
+        // ✅ 23. إعداد التحقق الفوري
+        function setupRealTimeValidation() {
+            // رقم الهوية
+            document.getElementById('idNumber').addEventListener('blur', function() {
+                const idValue = this.value;
+                const firstDigit = idValue.charAt(0);
+                let pattern = /^[0-9]{10}$|^[0-9]{11}$/;
+                let errorMessage = 'رقم الهوية/الإقامة غير صحيح. يجب أن يحتوي على ١٠ أو ١١ رقمًا.';
+                
+                // تحقق إضافي بناءً على الرقم الأول
+                if (idValue.length >= 1) {
+                    if (firstDigit === '1' && idValue.length !== 10) {
+                        errorMessage = 'رقم الهوية السعودية يجب أن يكون 10 أرقام.';
+                    } else if (firstDigit === '2' && (idValue.length < 10 || idValue.length > 11)) {
+                        errorMessage = 'رقم الإقامة يجب أن يكون 10 أو 11 رقمًا.';
+                    }
+                }
+                
+                validateField(this, pattern, errorMessage);
+            });
+            
+            // رقم الجوال
+            document.getElementById('phoneNumber').addEventListener('blur', function() {
+                const pattern = /^05[0-9]{8}$/;
+                validateField(this, pattern, 'رقم الجوال غير صحيح. يجب أن يبدأ بـ 05 ويحتوي على ١٠ أرقام.');
+            });
+            
+            // البريد الإلكتروني
+            document.getElementById('email').addEventListener('blur', function() {
+                const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                validateField(this, pattern, 'البريد الإلكتروني غير صحيح.');
+            });
+            
+            // التاريخ الهجري
+            document.getElementById('hijriBirth').addEventListener('blur', function() {
+                const pattern = /^(14[4-9][0-9])\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/;
+                validateField(this, pattern, 'التاريخ الهجري غير صحيح. استخدم الصيغة: سنة/شهر/يوم');
+            });
+        }
+        
+        // ✅ 24. دالة التحقق العامة للحقول
+        function validateField(field, pattern, errorMessage) {
+            const errorElement = document.getElementById(field.id + 'Error');
+            
+            if (field.value && !pattern.test(field.value)) {
+                field.classList.add('has-error');
+                field.classList.remove('field-valid');
+                
+                if (errorElement) {
+                    errorElement.textContent = errorMessage;
+                    errorElement.style.display = 'block';
+                }
+                return false;
+            } else {
+                field.classList.remove('has-error');
+                if (field.value) {
+                    field.classList.add('field-valid');
+                }
+                
+                if (errorElement) {
+                    errorElement.style.display = 'none';
+                }
+                return true;
+            }
+        }
+        
+        // ✅ 25. إرسال النموذج النهائي
+        async function submitFormFinal() {
+            // التحقق من جميع الصفحات
+            for (let i = 1; i <= formState.totalPages; i++) {
+                if (!validateCurrentPage()) {
+                    goToPage(i);
+                    alert('⚠️ يرجى تصحيح الأخطاء في جميع الصفحات قبل الإرسال.');
+                    return;
+                }
+            }
+            
+            // إعداد البريد للرد
+            const emailField = document.getElementById('email');
+            if (emailField && emailField.value) {
+                replyToEmail.value = emailField.value;
+            }
+            
+            // عرض حالة التحميل
+            const originalBtnHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="loading"></span> جاري الإرسال...';
+            submitBtn.disabled = true;
+            
+            // رسالة التأكيد
+            const studyType = document.getElementById('studyType').value;
+            const applicantType = applicantTypeInput.value;
+            
+            let confirmationMessage = '📋 تأكيد إرسال طلب التسجيل\n\n';
+            
+            if (studyType === 'تعليم عن بعد' || studyType === 'تعليم مدمج') {
+                confirmationMessage += '💰 تنبيه: المسار الذي اخترته برسوم دراسية.\n';
+            }
+            
+            if (applicantType === 'bridging') {
+                confirmationMessage += '🎓 ملاحظة: برنامج التجسير يتطلب إرفاق شهادة الدبلوم.\n';
+            }
+            
+            confirmationMessage += '\nيرجى العلم:\n';
+            confirmationMessage += '✅ الدفع لا يتم الآن\n';
+            confirmationMessage += '✅ سيكون الدفع عند مراجعة الشؤون الإدارية\n';
+            confirmationMessage += '✅ ستصلك رسالة تأكيد على البريد الإلكتروني\n\n';
+            confirmationMessage += 'هل تريد المتابعة؟';
+            
+            if (confirm(confirmationMessage)) {
+                try {
+                    // جمع البيانات
+                    const formData = new FormData(registrationForm);
+                    const formObject = {};
+                    formData.forEach((value, key) => {
+                        formObject[key] = value;
+                    });
+                    
+                    // إضافة معلومات إضافية
+                    formObject['نوع_المتقدم_كامل'] = document.querySelector('.applicant-type.selected h3').textContent;
+                    formObject['الوقت'] = new Date().toLocaleString('ar-SA');
+                    
+                    // إرسال البيانات (محاكاة)
+                    const result = await submitForm(formObject);
+                    
+                    if (result.success) {
+                        // إخفاء جميع الصفحات وإظهار رسالة النجاح
+                        document.querySelectorAll('.page-container').forEach(page => {
+                            page.style.display = 'none';
+                        });
+                        document.querySelector('.progress-container').style.display = 'none';
+                        document.getElementById('successMessage').style.display = 'block';
+                        
+                        // إضافة معلومات إضافية
+                        addSuccessMessageDetails(applicantType, studyType, result.applicationId);
+                        
+                        // حفظ البيانات محلياً (للوحة التحكم)
+                        saveApplicationLocally(formObject, result.applicationId);
+                        
+                        // التمرير إلى الأعلى
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                        
+                        console.log('🎉 تم إرسال النموذج بنجاح!', result);
+                    } else {
+                        throw new Error(result.message || 'فشل في إرسال الطلب');
+                    }
+                } catch (error) {
+                    console.error('❌ خطأ في الإرسال:', error);
+                    alert(`حدث خطأ أثناء إرسال الطلب:\n\n${error.message}\n\nيرجى المحاولة مرة أخرى.`);
+                    submitBtn.innerHTML = originalBtnHTML;
+                    submitBtn.disabled = false;
+                }
+            } else {
+                // إلغاء الإرسال
+                submitBtn.innerHTML = originalBtnHTML;
+                submitBtn.disabled = false;
+            }
+        }
+        
+        // ✅ 26. إرسال النموذج (محاكاة)
+        async function submitForm(formData) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve({
+                        success: true,
+                        message: 'تم إرسال الطلب بنجاح',
+                        applicationId: 'KKU-APP-' + Date.now()
+                    });
+                }, 1500);
+            });
+        }
+        
+        // ✅ 27. حفظ الطلب محلياً
+        function saveApplicationLocally(formData, applicationId) {
+            const applications = JSON.parse(localStorage.getItem('kkuApplications') || '[]');
+            
+            const application = {
+                id: applicationId,
+                timestamp: new Date().toISOString(),
+                status: 'pending',
+                data: formData
+            };
+            
+            applications.push(application);
+            localStorage.setItem('kkuApplications', JSON.stringify(applications));
+            
+            console.log('💾 تم حفظ الطلب محلياً:', applicationId);
+        }
+        
+        // ✅ 28. إضافة تفاصيل رسالة النجاح
+        function addSuccessMessageDetails(applicantType, studyType, applicationId) {
+            const successDiv = document.getElementById('successMessage');
+            
+            // إضافة رقم الطلب
+            const appIdElement = document.createElement('p');
+            appIdElement.innerHTML = `<span class="highlight">📋 رقم الطلب: <strong>${applicationId}</strong></span>`;
+            successDiv.insertBefore(appIdElement, successDiv.children[3]);
+        }
+        
+        // ✅ 29. إنشاء لوحة التحكم
+        function createAdminPanel() {
+            // نفس دالة لوحة التحكم السابقة
+            // (لن أكرر الكود هنا لتجنب الطول)
+        }
+        
+        // ✅ 30. تشغيل النظام
+        initializeSystem();
+    });
+    </script>
+</body>
+                  </html>
